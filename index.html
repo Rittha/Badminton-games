@@ -1,0 +1,510 @@
+<!doctype html>
+<html lang="th">
+<head>
+  <meta charset="utf-8" />
+  <meta name="viewport" content="width=device-width,initial-scale=1" />
+  <title>ก๊วนแบดมินตัน — จัดการสมาชิก</title>
+  <meta name="description" content="UI สำหรับจัดการสมาชิกก๊วนแบดมินตัน เพิ่ม/ลดชั่วโมง แก้ราคา และเพิ่มแถวได้" />
+
+  <!-- Minimal modern CSS (responsive, clean) -->
+  <style>
+    :root{
+      --bg1:#fff7fb;
+      --bg2:#f3f0ff;
+      --card:#ffffff;
+      --muted:#6b7280;
+      --accent:#ec4899;
+      --accent-2:#7c3aed;
+      --success:#16a34a;
+      --danger:#ef4444;
+      --glass: rgba(255,255,255,0.6);
+      --radius:14px;
+      --shadow: 0 8px 30px rgba(15,23,42,0.08);
+      font-family: Inter, ui-sans-serif, system-ui, -apple-system, "Segoe UI", Roboto, "Helvetica Neue", Arial;
+    }
+    *{box-sizing:border-box}
+    html,body{height:100%}
+    body{
+      margin:0;
+      background: linear-gradient(135deg,var(--bg1),var(--bg2));
+      padding:28px;
+      -webkit-font-smoothing:antialiased;
+      -moz-osx-font-smoothing:grayscale;
+      color:#0f172a;
+    }
+
+    .container{
+      max-width:1100px;
+      margin:0 auto;
+    }
+
+    .card{
+      background:var(--card);
+      border-radius:var(--radius);
+      padding:20px;
+      box-shadow:var(--shadow);
+      overflow:hidden;
+    }
+
+    header.app-header{
+      display:flex;
+      gap:16px;
+      align-items:center;
+      justify-content:space-between;
+      margin-bottom:18px;
+    }
+    .brand{
+      display:flex;
+      gap:12px;
+      align-items:center;
+    }
+    .logo{
+      width:56px;
+      height:56px;
+      border-radius:12px;
+      display:grid;
+      place-items:center;
+      background:linear-gradient(135deg,var(--accent),var(--accent-2));
+      color:white;
+      font-weight:700;
+      font-size:20px;
+      box-shadow: 0 6px 18px rgba(124,58,237,0.18);
+    }
+    h1{margin:0;font-size:20px}
+    p.lead{margin:0;color:var(--muted);font-size:13px}
+
+    .controls{
+      display:flex;
+      gap:10px;
+      align-items:center;
+      flex-wrap:wrap;
+    }
+
+    .btn{
+      border:0;
+      padding:10px 14px;
+      border-radius:10px;
+      cursor:pointer;
+      font-weight:600;
+      color:white;
+      background:var(--accent);
+      box-shadow: 0 6px 18px rgba(236,72,153,0.12);
+    }
+    .btn.secondary{
+      background:linear-gradient(90deg,var(--accent-2),#5b21b6);
+      box-shadow: 0 6px 18px rgba(124,58,237,0.12);
+    }
+    .btn.ghost{
+      background:transparent;
+      color:var(--muted);
+      border:1px solid #eef2ff;
+      box-shadow:none;
+    }
+
+    .grid{
+      display:grid;
+      grid-template-columns: 1fr 320px;
+      gap:18px;
+      margin-top:12px;
+    }
+
+    /* Table */
+    .table-wrap{
+      overflow:auto;
+      border-radius:12px;
+      border:1px solid #f1f5f9;
+    }
+    table{
+      width:100%;
+      border-collapse:collapse;
+      min-width:720px;
+    }
+    thead th{
+      text-align:left;
+      padding:12px 16px;
+      background:linear-gradient(90deg,#fff 0%, #fbf8ff 100%);
+      font-size:13px;
+      color:#374151;
+      position:sticky;
+      top:0;
+      z-index:2;
+    }
+    tbody td{
+      padding:12px 16px;
+      border-top:1px solid #f8fafc;
+      vertical-align:middle;
+      font-size:14px;
+      color:#0f172a;
+    }
+    tbody tr:hover{background:#fff7fb}
+
+    .small{font-size:13px;color:var(--muted)}
+    .center{text-align:center}
+    .actions{display:flex;gap:8px;justify-content:center}
+
+    .icon-btn{
+      border:0;
+      background:#eef2ff;
+      color:#1e3a8a;
+      padding:8px;
+      border-radius:8px;
+      cursor:pointer;
+      min-width:36px;
+      display:inline-grid;
+      place-items:center;
+    }
+    .icon-btn.danger{background:#fff1f2;color:var(--danger)}
+    .icon-btn.success{background:#ecfdf5;color:var(--success)}
+
+    input[type="number"], input[type="text"]{
+      padding:8px 10px;
+      border-radius:8px;
+      border:1px solid #e6edf3;
+      font-size:14px;
+      width:100%;
+    }
+
+    /* right panel */
+    .panel{
+      background:linear-gradient(180deg,#ffffff, #fbf8ff);
+      border-radius:12px;
+      padding:14px;
+      box-shadow: 0 6px 18px rgba(99,102,241,0.04);
+    }
+    .panel h3{margin:0 0 8px 0}
+    .row{display:flex;gap:8px;align-items:center;margin-bottom:10px}
+    .muted{color:var(--muted);font-size:13px}
+
+    .total{
+      display:flex;
+      justify-content:space-between;
+      align-items:center;
+      padding:12px;
+      border-radius:10px;
+      background:linear-gradient(90deg,#fff,#f8fafc);
+      margin-top:12px;
+      font-weight:700;
+    }
+
+    /* responsive */
+    @media (max-width:920px){
+      .grid{grid-template-columns:1fr; }
+      table{min-width:640px}
+    }
+    @media (max-width:640px){
+      table{min-width:560px}
+      .logo{width:48px;height:48px;font-size:18px}
+    }
+  </style>
+</head>
+<body>
+  <div class="container">
+    <div class="card" role="application" aria-label="จัดการสมาชิกก๊วนแบดมินตัน">
+      <header class="app-header">
+        <div class="brand">
+          <div class="logo" aria-hidden="true">🏸</div>
+          <div>
+            <h1>ก๊วนคนรักแบดมินตัน</h1>
+            <p class="lead">จัดการสมาชิก เพิ่ม/ลดชั่วโมง และแก้ราคาได้ทันที</p>
+          </div>
+        </div>
+
+        <div class="controls" aria-hidden="false">
+          <button id="resetBtn" class="btn ghost" title="รีเซ็ตข้อมูลตัวอย่าง">รีเซ็ต</button>
+          <button id="clearStorageBtn" class="btn ghost" title="ล้างข้อมูลที่เก็บไว้">ล้างข้อมูล</button>
+          <button id="addRowBtn" class="btn secondary" title="เพิ่มสมาชิกใหม่">+ เพิ่มสมาชิก</button>
+        </div>
+      </header>
+
+      <div class="grid">
+        <!-- Left: Table -->
+        <div>
+          <div class="small muted">ตั้งค่า</div>
+          <div style="display:flex;gap:10px;align-items:center;margin:8px 0 14px 0">
+            <label class="small muted" for="priceInput">ราคา ต่อชั่วโมง</label>
+            <input id="priceInput" type="number" min="0" step="1" value="48" style="width:120px" aria-label="ราคา ต่อชั่วโมง">
+            <div class="muted" style="margin-left:auto">ค่าใช้จ่ายจะคำนวณอัตโนมัติ</div>
+          </div>
+
+          <div class="table-wrap" role="region" aria-label="ตารางสมาชิก">
+            <table id="playersTable" aria-describedby="tableDesc">
+              <caption id="tableDesc" style="display:none">ตารางแสดงสมาชิก จำนวนชั่วโมง ค่าใช้จ่าย และเครดิตคงเหลือ</caption>
+              <thead>
+                <tr>
+                  <th class="small">#</th>
+                  <th>ชื่อ</th>
+                  <th class="center">ชม.</th>
+                  <th class="center">ค่าใช้จ่าย</th>
+                  <th class="center">เพิ่ม</th>
+                  <th class="center">ลด</th>
+                  <th class="center">เครดิต</th>
+                  <th class="center">จัดการ</th>
+                </tr>
+              </thead>
+              <tbody id="tbody">
+                <!-- rows injected by JS -->
+              </tbody>
+            </table>
+          </div>
+        </div>
+
+        <!-- Right: Controls and summary -->
+        <aside class="panel" aria-label="สรุปและเพิ่มสมาชิก">
+          <h3>เพิ่มสมาชิกใหม่</h3>
+          <div class="row">
+            <input id="newName" type="text" placeholder="ชื่อสมาชิก" aria-label="ชื่อสมาชิก">
+          </div>
+          <div class="row">
+            <input id="newHours" type="number" min="0" step="1" value="1" aria-label="ชั่วโมงเริ่มต้น">
+            <input id="newCredit" type="number" step="1" value="0" aria-label="เครดิตเริ่มต้น">
+          </div>
+          <div style="display:flex;gap:8px">
+            <button id="createBtn" class="btn">เพิ่ม</button>
+            <button id="createAndEditBtn" class="btn ghost">เพิ่มแล้วแก้ไข</button>
+          </div>
+
+          <div style="margin-top:16px">
+            <div class="muted">สรุป</div>
+            <div class="total" aria-live="polite">
+              <div>สมาชิกทั้งหมด</div>
+              <div id="count">0</div>
+            </div>
+            <div class="total" style="margin-top:8px" aria-live="polite">
+              <div>รวมชั่วโมง</div>
+              <div id="sumHours">0</div>
+            </div>
+            <div class="total" style="margin-top:8px" aria-live="polite">
+              <div>รวมค่าใช้จ่าย</div>
+              <div id="sumExpense">0</div>
+            </div>
+          </div>
+
+          <div style="margin-top:14px" class="muted small">
+            ข้อมูลจะถูกเก็บไว้ในเบราว์เซอร์ สามารถนำไปใช้บน GitHub Pages ได้ทันที
+          </div>
+        </aside>
+      </div>
+    </div>
+  </div>
+
+  <script>
+    // Production-ready single-file script
+    (function(){
+      // Utilities
+      const $ = (sel, root=document) => root.querySelector(sel);
+      const $$ = (sel, root=document) => Array.from(root.querySelectorAll(sel));
+      const formatCurrency = v => Number(v).toLocaleString('th-TH');
+
+      // Default sample data
+      const SAMPLE = [
+        { id: 1, name: "A", hours: 2, credit: -96 },
+        { id: 2, name: "B", hours: 1, credit: 100 },
+        { id: 3, name: "C", hours: 2, credit: 50 }
+      ];
+
+      // State
+      let players = [];
+      let pricePerHour = 48;
+      const STORAGE_KEY = 'badminton_roster_v1';
+
+      // Elements
+      const tbody = $('#tbody');
+      const priceInput = $('#priceInput');
+      const countEl = $('#count');
+      const sumHoursEl = $('#sumHours');
+      const sumExpenseEl = $('#sumExpense');
+      const addRowBtn = $('#addRowBtn');
+      const createBtn = $('#createBtn');
+      const createAndEditBtn = $('#createAndEditBtn');
+      const newName = $('#newName');
+      const newHours = $('#newHours');
+      const newCredit = $('#newCredit');
+      const resetBtn = $('#resetBtn');
+      const clearStorageBtn = $('#clearStorageBtn');
+
+      // Load from storage or sample
+      function load(){
+        try{
+          const raw = localStorage.getItem(STORAGE_KEY);
+          if(raw){
+            const parsed = JSON.parse(raw);
+            players = parsed.players || SAMPLE.slice();
+            pricePerHour = parsed.pricePerHour ?? pricePerHour;
+          } else {
+            players = SAMPLE.slice();
+          }
+        }catch(e){
+          console.error('load error', e);
+          players = SAMPLE.slice();
+        }
+        priceInput.value = pricePerHour;
+        render();
+      }
+
+      function save(){
+        try{
+          localStorage.setItem(STORAGE_KEY, JSON.stringify({ players, pricePerHour }));
+        }catch(e){
+          console.warn('save failed', e);
+        }
+      }
+
+      // Compute expense per player
+      function expenseFor(p){
+        return Math.max(0, Math.round(p.hours * pricePerHour));
+      }
+
+      // Render table
+      function render(){
+        tbody.innerHTML = '';
+        players.forEach((p, idx) => {
+          const tr = document.createElement('tr');
+          tr.innerHTML = `
+            <td class="small">${idx+1}</td>
+            <td>
+              <input type="text" data-id="${p.id}" class="name-input" value="${escapeHtml(p.name)}" />
+            </td>
+            <td class="center">
+              <input type="number" min="0" step="1" data-id="${p.id}" class="hours-input" value="${p.hours}" style="width:72px" />
+            </td>
+            <td class="center small">${formatCurrency(expenseFor(p))} ฿</td>
+            <td class="center">
+              <button class="icon-btn success inc-btn" data-id="${p.id}" title="เพิ่ม 1 ชั่วโมง">＋</button>
+            </td>
+            <td class="center">
+              <button class="icon-btn danger dec-btn" data-id="${p.id}" title="ลด 1 ชั่วโมง">－</button>
+            </td>
+            <td class="center small">${formatCurrency(p.credit)} ฿</td>
+            <td class="center">
+              <div class="actions">
+                <button class="icon-btn" data-id="${p.id}" title="ลบสมาชิก">🗑</button>
+              </div>
+            </td>
+          `;
+          tbody.appendChild(tr);
+        });
+
+        // Attach events
+        $$('.inc-btn').forEach(btn => btn.addEventListener('click', onInc));
+        $$('.dec-btn').forEach(btn => btn.addEventListener('click', onDec));
+        $$('.icon-btn[data-id]').forEach(btn => {
+          if(btn.title === 'ลบสมาชิก') btn.addEventListener('click', onDelete);
+        });
+        $$('.hours-input').forEach(inp => inp.addEventListener('change', onHoursChange));
+        $$('.name-input').forEach(inp => inp.addEventListener('change', onNameChange));
+
+        updateSummary();
+        save();
+      }
+
+      // Event handlers
+      function onInc(e){
+        const id = Number(e.currentTarget.dataset.id);
+        players = players.map(p => p.id === id ? ({...p, hours: p.hours + 1}) : p);
+        render();
+      }
+      function onDec(e){
+        const id = Number(e.currentTarget.dataset.id);
+        players = players.map(p => p.id === id ? ({...p, hours: Math.max(0, p.hours - 1)}) : p);
+        render();
+      }
+      function onDelete(e){
+        const id = Number(e.currentTarget.dataset.id);
+        if(!confirm('ต้องการลบสมาชิกนี้จริงหรือไม่')) return;
+        players = players.filter(p => p.id !== id);
+        render();
+      }
+      function onHoursChange(e){
+        const id = Number(e.currentTarget.dataset.id);
+        const val = Math.max(0, Math.floor(Number(e.currentTarget.value) || 0));
+        players = players.map(p => p.id === id ? ({...p, hours: val}) : p);
+        render();
+      }
+      function onNameChange(e){
+        const id = Number(e.currentTarget.dataset.id);
+        const val = String(e.currentTarget.value || '').trim() || 'ไม่ระบุ';
+        players = players.map(p => p.id === id ? ({...p, name: val}) : p);
+        render();
+      }
+
+      // Add new member
+      function addMember(name, hours=1, credit=0){
+        const id = Date.now() + Math.floor(Math.random()*1000);
+        players.push({ id, name: String(name||'ไม่ระบุ'), hours: Number(hours)||0, credit: Number(credit)||0 });
+        render();
+      }
+
+      // Summary
+      function updateSummary(){
+        const count = players.length;
+        const sumHours = players.reduce((s,p)=>s+p.hours,0);
+        const sumExpense = players.reduce((s,p)=>s+expenseFor(p),0);
+        countEl.textContent = count;
+        sumHoursEl.textContent = sumHours;
+        sumExpenseEl.textContent = formatCurrency(sumExpense) + ' ฿';
+      }
+
+      // Helpers
+      function escapeHtml(s){
+        return String(s).replace(/[&<>"']/g, function(m){ return ({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#39;'}[m])});
+      }
+
+      // Controls wiring
+      priceInput.addEventListener('change', () => {
+        const v = Math.max(0, Math.round(Number(priceInput.value) || 0));
+        pricePerHour = v;
+        priceInput.value = v;
+        render();
+      });
+
+      addRowBtn.addEventListener('click', () => {
+        newName.focus();
+        addMember('สมาชิกใหม่', 1, 0);
+      });
+
+      createBtn.addEventListener('click', () => {
+        const name = newName.value.trim() || 'ไม่ระบุ';
+        const hours = Math.max(0, Math.floor(Number(newHours.value) || 0));
+        const credit = Math.round(Number(newCredit.value) || 0);
+        addMember(name, hours, credit);
+        newName.value = '';
+        newHours.value = 1;
+        newCredit.value = 0;
+      });
+
+      createAndEditBtn.addEventListener('click', () => {
+        createBtn.click();
+        // focus last name input for quick edit
+        setTimeout(()=> {
+          const lastNameInput = tbody.querySelector('input.name-input:last-of-type');
+          if(lastNameInput) lastNameInput.focus();
+        }, 50);
+      });
+
+      resetBtn.addEventListener('click', () => {
+        if(!confirm('รีเซ็ตเป็นข้อมูลตัวอย่าง? ข้อมูลปัจจุบันจะถูกแทนที่')) return;
+        players = SAMPLE.slice();
+        pricePerHour = 48;
+        priceInput.value = pricePerHour;
+        render();
+      });
+
+      clearStorageBtn.addEventListener('click', () => {
+        if(!confirm('ล้างข้อมูลที่เก็บไว้ในเบราว์เซอร์?')) return;
+        localStorage.removeItem(STORAGE_KEY);
+        load();
+      });
+
+      // Initialize
+      load();
+
+      // Expose for debugging in console (optional)
+      window.__badminton = {
+        get players(){ return players },
+        setPrice(v){ pricePerHour = v; priceInput.value = v; render(); },
+        addMember
+      };
+    })();
+  </script>
+</body>
+</html>
