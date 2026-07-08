@@ -6,7 +6,6 @@
   <title>ก๊วนแบดมินตัน — จัดการสมาชิก</title>
   <meta name="description" content="UI สำหรับจัดการสมาชิกก๊วนแบดมินตัน เพิ่ม/ลดชั่วโมง แก้ราคา และเพิ่มแถวได้" />
 
-  <!-- Minimal modern CSS (responsive, clean) -->
   <style>
     :root{
       --bg1:#fff7fb;
@@ -17,7 +16,6 @@
       --accent-2:#7c3aed;
       --success:#16a34a;
       --danger:#ef4444;
-      --glass: rgba(255,255,255,0.6);
       --radius:14px;
       --shadow: 0 8px 30px rgba(15,23,42,0.08);
       font-family: Inter, ui-sans-serif, system-ui, -apple-system, "Segoe UI", Roboto, "Helvetica Neue", Arial;
@@ -33,168 +31,44 @@
       color:#0f172a;
     }
 
-    .container{
-      max-width:1100px;
-      margin:0 auto;
-    }
-
-    .card{
-      background:var(--card);
-      border-radius:var(--radius);
-      padding:20px;
-      box-shadow:var(--shadow);
-      overflow:hidden;
-    }
-
-    header.app-header{
-      display:flex;
-      gap:16px;
-      align-items:center;
-      justify-content:space-between;
-      margin-bottom:18px;
-    }
-    .brand{
-      display:flex;
-      gap:12px;
-      align-items:center;
-    }
-    .logo{
-      width:56px;
-      height:56px;
-      border-radius:12px;
-      display:grid;
-      place-items:center;
-      background:linear-gradient(135deg,var(--accent),var(--accent-2));
-      color:white;
-      font-weight:700;
-      font-size:20px;
-      box-shadow: 0 6px 18px rgba(124,58,237,0.18);
-    }
+    .container{max-width:1100px;margin:0 auto}
+    .card{background:var(--card);border-radius:var(--radius);padding:20px;box-shadow:var(--shadow);overflow:hidden}
+    header.app-header{display:flex;gap:16px;align-items:center;justify-content:space-between;margin-bottom:18px}
+    .brand{display:flex;gap:12px;align-items:center}
+    .logo{width:56px;height:56px;border-radius:12px;display:grid;place-items:center;background:linear-gradient(135deg,var(--accent),var(--accent-2));color:white;font-weight:700;font-size:20px;box-shadow: 0 6px 18px rgba(124,58,237,0.18)}
     h1{margin:0;font-size:20px}
     p.lead{margin:0;color:var(--muted);font-size:13px}
 
-    .controls{
-      display:flex;
-      gap:10px;
-      align-items:center;
-      flex-wrap:wrap;
-    }
+    .controls{display:flex;gap:10px;align-items:center;flex-wrap:wrap}
+    .btn{border:0;padding:10px 14px;border-radius:10px;cursor:pointer;font-weight:600;color:white;background:var(--accent);box-shadow: 0 6px 18px rgba(236,72,153,0.12)}
+    .btn.secondary{background:linear-gradient(90deg,var(--accent-2),#5b21b6);box-shadow: 0 6px 18px rgba(124,58,237,0.12)}
+    .btn.ghost{background:transparent;color:var(--muted);border:1px solid #eef2ff;box-shadow:none}
 
-    .btn{
-      border:0;
-      padding:10px 14px;
-      border-radius:10px;
-      cursor:pointer;
-      font-weight:600;
-      color:white;
-      background:var(--accent);
-      box-shadow: 0 6px 18px rgba(236,72,153,0.12);
-    }
-    .btn.secondary{
-      background:linear-gradient(90deg,var(--accent-2),#5b21b6);
-      box-shadow: 0 6px 18px rgba(124,58,237,0.12);
-    }
-    .btn.ghost{
-      background:transparent;
-      color:var(--muted);
-      border:1px solid #eef2ff;
-      box-shadow:none;
-    }
+    .grid{display:grid;grid-template-columns: 1fr 320px;gap:18px;margin-top:12px}
 
-    .grid{
-      display:grid;
-      grid-template-columns: 1fr 320px;
-      gap:18px;
-      margin-top:12px;
-    }
-
-    /* Table */
-    .table-wrap{
-      overflow:auto;
-      border-radius:12px;
-      border:1px solid #f1f5f9;
-    }
-    table{
-      width:100%;
-      border-collapse:collapse;
-      min-width:720px;
-    }
-    thead th{
-      text-align:left;
-      padding:12px 16px;
-      background:linear-gradient(90deg,#fff 0%, #fbf8ff 100%);
-      font-size:13px;
-      color:#374151;
-      position:sticky;
-      top:0;
-      z-index:2;
-    }
-    tbody td{
-      padding:12px 16px;
-      border-top:1px solid #f8fafc;
-      vertical-align:middle;
-      font-size:14px;
-      color:#0f172a;
-    }
+    .table-wrap{overflow:auto;border-radius:12px;border:1px solid #f1f5f9}
+    table{width:100%;border-collapse:collapse;min-width:720px}
+    thead th{text-align:left;padding:12px 16px;background:linear-gradient(90deg,#fff 0%, #fbf8ff 100%);font-size:13px;color:#374151;position:sticky;top:0;z-index:2}
+    tbody td{padding:12px 16px;border-top:1px solid #f8fafc;vertical-align:middle;font-size:14px;color:#0f172a}
     tbody tr:hover{background:#fff7fb}
-
     .small{font-size:13px;color:var(--muted)}
     .center{text-align:center}
     .actions{display:flex;gap:8px;justify-content:center}
 
-    .icon-btn{
-      border:0;
-      background:#eef2ff;
-      color:#1e3a8a;
-      padding:8px;
-      border-radius:8px;
-      cursor:pointer;
-      min-width:36px;
-      display:inline-grid;
-      place-items:center;
-    }
+    .icon-btn{border:0;background:#eef2ff;color:#1e3a8a;padding:8px;border-radius:8px;cursor:pointer;min-width:36px;display:inline-grid;place-items:center}
     .icon-btn.danger{background:#fff1f2;color:var(--danger)}
     .icon-btn.success{background:#ecfdf5;color:var(--success)}
 
-    input[type="number"], input[type="text"]{
-      padding:8px 10px;
-      border-radius:8px;
-      border:1px solid #e6edf3;
-      font-size:14px;
-      width:100%;
-    }
+    input[type="number"], input[type="text"]{padding:8px 10px;border-radius:8px;border:1px solid #e6edf3;font-size:14px;width:100%}
 
-    /* right panel */
-    .panel{
-      background:linear-gradient(180deg,#ffffff, #fbf8ff);
-      border-radius:12px;
-      padding:14px;
-      box-shadow: 0 6px 18px rgba(99,102,241,0.04);
-    }
+    .panel{background:linear-gradient(180deg,#ffffff, #fbf8ff);border-radius:12px;padding:14px;box-shadow: 0 6px 18px rgba(99,102,241,0.04)}
     .panel h3{margin:0 0 8px 0}
     .row{display:flex;gap:8px;align-items:center;margin-bottom:10px}
     .muted{color:var(--muted);font-size:13px}
+    .total{display:flex;justify-content:space-between;align-items:center;padding:12px;border-radius:10px;background:linear-gradient(90deg,#fff,#f8fafc);margin-top:12px;font-weight:700}
 
-    .total{
-      display:flex;
-      justify-content:space-between;
-      align-items:center;
-      padding:12px;
-      border-radius:10px;
-      background:linear-gradient(90deg,#fff,#f8fafc);
-      margin-top:12px;
-      font-weight:700;
-    }
-
-    /* responsive */
-    @media (max-width:920px){
-      .grid{grid-template-columns:1fr; }
-      table{min-width:640px}
-    }
-    @media (max-width:640px){
-      table{min-width:560px}
-      .logo{width:48px;height:48px;font-size:18px}
-    }
+    @media (max-width:920px){.grid{grid-template-columns:1fr;}table{min-width:640px}}
+    @media (max-width:640px){table{min-width:560px}.logo{width:48px;height:48px;font-size:18px}}
   </style>
 </head>
 <body>
@@ -212,6 +86,8 @@
         <div class="controls" aria-hidden="false">
           <button id="resetBtn" class="btn ghost" title="รีเซ็ตข้อมูลตัวอย่าง">รีเซ็ต</button>
           <button id="clearStorageBtn" class="btn ghost" title="ล้างข้อมูลที่เก็บไว้">ล้างข้อมูล</button>
+          <button id="shareBtn" class="btn ghost" title="แชร์ข้อมูล">แชร์</button>
+          <button id="exportBtn" class="btn ghost" title="Export CSV">Export CSV</button>
           <button id="addRowBtn" class="btn secondary" title="เพิ่มสมาชิกใหม่">+ เพิ่มสมาชิก</button>
         </div>
       </header>
@@ -228,7 +104,7 @@
 
           <div class="table-wrap" role="region" aria-label="ตารางสมาชิก">
             <table id="playersTable" aria-describedby="tableDesc">
-              <caption id="tableDesc" style="display:none">ตารางแสดงสมาชิก จำนวนชั่วโมง ค่าใช้จ่าย และเครดิตคงเหลือ</caption>
+              <caption id="tableDesc" style="display:none">ตารางแสดงสมาชิก จำนวนชั่วโมง และค่าใช้จ่าย</caption>
               <thead>
                 <tr>
                   <th class="small">#</th>
@@ -237,7 +113,6 @@
                   <th class="center">ค่าใช้จ่าย</th>
                   <th class="center">เพิ่ม</th>
                   <th class="center">ลด</th>
-                  <th class="center">เครดิต</th>
                   <th class="center">จัดการ</th>
                 </tr>
               </thead>
@@ -256,7 +131,6 @@
           </div>
           <div class="row">
             <input id="newHours" type="number" min="0" step="1" value="1" aria-label="ชั่วโมงเริ่มต้น">
-            <input id="newCredit" type="number" step="1" value="0" aria-label="เครดิตเริ่มต้น">
           </div>
           <div style="display:flex;gap:8px">
             <button id="createBtn" class="btn">เพิ่ม</button>
@@ -288,26 +162,22 @@
   </div>
 
   <script>
-    // Production-ready single-file script
     (function(){
-      // Utilities
       const $ = (sel, root=document) => root.querySelector(sel);
       const $$ = (sel, root=document) => Array.from(root.querySelectorAll(sel));
       const formatCurrency = v => Number(v).toLocaleString('th-TH');
 
-      // Default sample data
+      // Default sample data (no credit)
       const SAMPLE = [
-        { id: 1, name: "A", hours: 2, credit: -96 },
-        { id: 2, name: "B", hours: 1, credit: 100 },
-        { id: 3, name: "C", hours: 2, credit: 50 }
+        { id: 1, name: "A", hours: 2 },
+        { id: 2, name: "B", hours: 1 },
+        { id: 3, name: "C", hours: 2 }
       ];
 
-      // State
       let players = [];
       let pricePerHour = 48;
-      const STORAGE_KEY = 'badminton_roster_v1';
+      const STORAGE_KEY = 'badminton_roster_v2';
 
-      // Elements
       const tbody = $('#tbody');
       const priceInput = $('#priceInput');
       const countEl = $('#count');
@@ -318,11 +188,11 @@
       const createAndEditBtn = $('#createAndEditBtn');
       const newName = $('#newName');
       const newHours = $('#newHours');
-      const newCredit = $('#newCredit');
       const resetBtn = $('#resetBtn');
       const clearStorageBtn = $('#clearStorageBtn');
+      const shareBtn = $('#shareBtn');
+      const exportBtn = $('#exportBtn');
 
-      // Load from storage or sample
       function load(){
         try{
           const raw = localStorage.getItem(STORAGE_KEY);
@@ -349,12 +219,10 @@
         }
       }
 
-      // Compute expense per player
       function expenseFor(p){
         return Math.max(0, Math.round(p.hours * pricePerHour));
       }
 
-      // Render table
       function render(){
         tbody.innerHTML = '';
         players.forEach((p, idx) => {
@@ -374,22 +242,18 @@
             <td class="center">
               <button class="icon-btn danger dec-btn" data-id="${p.id}" title="ลด 1 ชั่วโมง">－</button>
             </td>
-            <td class="center small">${formatCurrency(p.credit)} ฿</td>
             <td class="center">
               <div class="actions">
-                <button class="icon-btn" data-id="${p.id}" title="ลบสมาชิก">🗑</button>
+                <button class="icon-btn delete-btn" data-id="${p.id}" title="ลบสมาชิก">🗑</button>
               </div>
             </td>
           `;
           tbody.appendChild(tr);
         });
 
-        // Attach events
         $$('.inc-btn').forEach(btn => btn.addEventListener('click', onInc));
         $$('.dec-btn').forEach(btn => btn.addEventListener('click', onDec));
-        $$('.icon-btn[data-id]').forEach(btn => {
-          if(btn.title === 'ลบสมาชิก') btn.addEventListener('click', onDelete);
-        });
+        $$('.delete-btn').forEach(btn => btn.addEventListener('click', onDelete));
         $$('.hours-input').forEach(inp => inp.addEventListener('change', onHoursChange));
         $$('.name-input').forEach(inp => inp.addEventListener('change', onNameChange));
 
@@ -397,7 +261,6 @@
         save();
       }
 
-      // Event handlers
       function onInc(e){
         const id = Number(e.currentTarget.dataset.id);
         players = players.map(p => p.id === id ? ({...p, hours: p.hours + 1}) : p);
@@ -427,14 +290,12 @@
         render();
       }
 
-      // Add new member
-      function addMember(name, hours=1, credit=0){
+      function addMember(name, hours=1){
         const id = Date.now() + Math.floor(Math.random()*1000);
-        players.push({ id, name: String(name||'ไม่ระบุ'), hours: Number(hours)||0, credit: Number(credit)||0 });
+        players.push({ id, name: String(name||'ไม่ระบุ'), hours: Number(hours)||0 });
         render();
       }
 
-      // Summary
       function updateSummary(){
         const count = players.length;
         const sumHours = players.reduce((s,p)=>s+p.hours,0);
@@ -444,12 +305,10 @@
         sumExpenseEl.textContent = formatCurrency(sumExpense) + ' ฿';
       }
 
-      // Helpers
       function escapeHtml(s){
         return String(s).replace(/[&<>"']/g, function(m){ return ({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#39;'}[m])});
       }
 
-      // Controls wiring
       priceInput.addEventListener('change', () => {
         const v = Math.max(0, Math.round(Number(priceInput.value) || 0));
         pricePerHour = v;
@@ -459,22 +318,19 @@
 
       addRowBtn.addEventListener('click', () => {
         newName.focus();
-        addMember('สมาชิกใหม่', 1, 0);
+        addMember('สมาชิกใหม่', 1);
       });
 
       createBtn.addEventListener('click', () => {
         const name = newName.value.trim() || 'ไม่ระบุ';
         const hours = Math.max(0, Math.floor(Number(newHours.value) || 0));
-        const credit = Math.round(Number(newCredit.value) || 0);
-        addMember(name, hours, credit);
+        addMember(name, hours);
         newName.value = '';
         newHours.value = 1;
-        newCredit.value = 0;
       });
 
       createAndEditBtn.addEventListener('click', () => {
         createBtn.click();
-        // focus last name input for quick edit
         setTimeout(()=> {
           const lastNameInput = tbody.querySelector('input.name-input:last-of-type');
           if(lastNameInput) lastNameInput.focus();
@@ -495,10 +351,93 @@
         load();
       });
 
-      // Initialize
+      // Export CSV
+      function exportCSV(){
+        const headers = ['ชื่อ','ชั่วโมง','ค่าใช้จ่าย(฿)'];
+        const rows = players.map(p => {
+          return [p.name, p.hours, expenseFor(p)];
+        });
+        // include metadata row at top (price per hour and timestamp)
+        const meta = [`ราคา/ชม.: ${pricePerHour} ฿`, `สร้างเมื่อ: ${new Date().toLocaleString('th-TH')}`, ''];
+        const csvLines = [];
+        csvLines.push(meta.join(','));
+        csvLines.push(headers.join(','));
+        rows.forEach(r => {
+          // escape commas and quotes
+          const line = r.map(cell => {
+            const s = String(cell).replace(/"/g,'""');
+            return s.includes(',') || s.includes('"') ? `"${s}"` : s;
+          }).join(',');
+          csvLines.push(line);
+        });
+        const csv = csvLines.join('\n');
+        const blob = new Blob([csv], { type: 'text/csv;charset=utf-8;' });
+        const url = URL.createObjectURL(blob);
+        const a = document.createElement('a');
+        a.href = url;
+        const filename = `badminton_roster_${new Date().toISOString().slice(0,19).replace(/[:T]/g,'-')}.csv`;
+        a.download = filename;
+        document.body.appendChild(a);
+        a.click();
+        a.remove();
+        URL.revokeObjectURL(url);
+      }
+
+      exportBtn.addEventListener('click', () => {
+        try{
+          exportCSV();
+        }catch(e){
+          alert('เกิดข้อผิดพลาดขณะ Export CSV');
+          console.error(e);
+        }
+      });
+
+      // Share (Web Share API with fallback to copy CSV text)
+      async function shareData(){
+        // Prepare a short summary text and CSV as fallback
+        const summary = `ก๊วนแบดมินตัน — สมาชิก ${players.length}, รวมชั่วโมง ${players.reduce((s,p)=>s+p.hours,0)}, รวมค่าใช้จ่าย ${players.reduce((s,p)=>s+expenseFor(p),0)} ฿`;
+        if(navigator.share){
+          try{
+            await navigator.share({
+              title: 'ก๊วนแบดมินตัน',
+              text: summary,
+              url: location.href
+            });
+            return;
+          }catch(err){
+            // user cancelled or failed, fallback to copy
+          }
+        }
+        // Fallback: copy CSV to clipboard (if allowed) or copy page URL
+        try{
+          // try to copy CSV text
+          const headers = ['ชื่อ','ชั่วโมง','ค่าใช้จ่าย(฿)'];
+          const rows = players.map(p => [p.name, p.hours, expenseFor(p)]);
+          const csvLines = [];
+          csvLines.push(`ราคา/ชม.: ${pricePerHour} ฿, สร้างเมื่อ: ${new Date().toLocaleString('th-TH')}`);
+          csvLines.push(headers.join(','));
+          rows.forEach(r => csvLines.push(r.join(',')));
+          const csv = csvLines.join('\n');
+          await navigator.clipboard.writeText(csv);
+          alert('ข้อมูลถูกคัดลอกเป็น CSV ไปยังคลิปบอร์ดแล้ว คุณสามารถวาง (paste) เพื่อแชร์ได้');
+        }catch(e){
+          // final fallback: copy page URL
+          try{
+            await navigator.clipboard.writeText(location.href);
+            alert('ไม่สามารถแชร์โดยตรง ได้คัดลอกลิงก์หน้าเว็บไปยังคลิปบอร์ดแล้ว');
+          }catch(err){
+            alert('ไม่สามารถแชร์อัตโนมัติได้ โปรดคัดลอกข้อมูลด้วยตนเอง');
+          }
+        }
+      }
+
+      shareBtn.addEventListener('click', () => {
+        shareData();
+      });
+
       load();
 
-      // Expose for debugging in console (optional)
+      // Expose for debugging
       window.__badminton = {
         get players(){ return players },
         setPrice(v){ pricePerHour = v; priceInput.value = v; render(); },
