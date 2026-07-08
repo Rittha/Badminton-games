@@ -46,8 +46,14 @@
 
     .grid{display:grid;grid-template-columns: 1fr 320px;gap:18px;margin-top:12px}
 
-    .table-wrap{overflow:auto;border-radius:12px;border:1px solid #f1f5f9}
-    table{width:100%;border-collapse:collapse;min-width:720px}
+    /* Table container with vertical scrollbar when content grows */
+    .table-wrap{
+      overflow:auto;
+      border-radius:12px;
+      border:1px solid #f1f5f9;
+      max-height:420px; /* ปรับค่านี้ตามต้องการ */
+    }
+    table{width:100%;border-collapse:collapse;min-width:640px}
     thead th{text-align:left;padding:12px 16px;background:linear-gradient(90deg,#fff 0%, #fbf8ff 100%);font-size:13px;color:#374151;position:sticky;top:0;z-index:2}
     tbody td{padding:12px 16px;border-top:1px solid #f8fafc;vertical-align:middle;font-size:14px;color:#0f172a}
     tbody tr:hover{background:#fff7fb}
@@ -67,8 +73,13 @@
     .muted{color:var(--muted);font-size:13px}
     .total{display:flex;justify-content:space-between;align-items:center;padding:12px;border-radius:10px;background:linear-gradient(90deg,#fff,#f8fafc);margin-top:12px;font-weight:700}
 
-    @media (max-width:920px){.grid{grid-template-columns:1fr;}table{min-width:640px}}
-    @media (max-width:640px){table{min-width:560px}.logo{width:48px;height:48px;font-size:18px}}
+    /* custom scrollbar (modern browsers) */
+    .table-wrap::-webkit-scrollbar{width:12px}
+    .table-wrap::-webkit-scrollbar-track{background:transparent}
+    .table-wrap::-webkit-scrollbar-thumb{background:linear-gradient(180deg,#e9d5ff,#fbcfe8);border-radius:10px;border:3px solid transparent;background-clip:padding-box}
+
+    @media (max-width:920px){.grid{grid-template-columns:1fr;}table{min-width:560px}}
+    @media (max-width:640px){table{min-width:520px}.logo{width:48px;height:48px;font-size:18px}}
   </style>
 </head>
 <body>
@@ -107,7 +118,6 @@
               <caption id="tableDesc" style="display:none">ตารางแสดงสมาชิก จำนวนชั่วโมง และค่าใช้จ่าย</caption>
               <thead>
                 <tr>
-                  <th class="small">#</th>
                   <th>ชื่อ</th>
                   <th class="center">ชม.</th>
                   <th class="center">ค่าใช้จ่าย</th>
@@ -167,7 +177,7 @@
       const $$ = (sel, root=document) => Array.from(root.querySelectorAll(sel));
       const formatCurrency = v => Number(v).toLocaleString('th-TH');
 
-      // Default sample data (no credit)
+      // Default sample data (no index column)
       const SAMPLE = [
         { id: 1, name: "A", hours: 2 },
         { id: 2, name: "B", hours: 1 },
@@ -176,7 +186,7 @@
 
       let players = [];
       let pricePerHour = 48;
-      const STORAGE_KEY = 'badminton_roster_v2';
+      const STORAGE_KEY = 'badminton_roster_v3';
 
       const tbody = $('#tbody');
       const priceInput = $('#priceInput');
@@ -223,12 +233,22 @@
         return Math.max(0, Math.round(p.hours * pricePerHour));
       }
 
+      // Sort players by hours ascending, then by name for stable order
+      function sortPlayers(){
+        players.sort((a,b) => {
+          if (a.hours !== b.hours) return a.hours - b.hours;
+          return String(a.name).localeCompare(String(b.name), 'th');
+        });
+      }
+
       function render(){
+        // ensure sorted before render
+        sortPlayers();
+
         tbody.innerHTML = '';
-        players.forEach((p, idx) => {
+        players.forEach((p) => {
           const tr = document.createElement('tr');
           tr.innerHTML = `
-            <td class="small">${idx+1}</td>
             <td>
               <input type="text" data-id="${p.id}" class="name-input" value="${escapeHtml(p.name)}" />
             </td>
@@ -251,6 +271,7 @@
           tbody.appendChild(tr);
         });
 
+        // Attach events
         $$('.inc-btn').forEach(btn => btn.addEventListener('click', onInc));
         $$('.dec-btn').forEach(btn => btn.addEventListener('click', onDec));
         $$('.delete-btn').forEach(btn => btn.addEventListener('click', onDelete));
@@ -354,16 +375,12 @@
       // Export CSV
       function exportCSV(){
         const headers = ['ชื่อ','ชั่วโมง','ค่าใช้จ่าย(฿)'];
-        const rows = players.map(p => {
-          return [p.name, p.hours, expenseFor(p)];
-        });
-        // include metadata row at top (price per hour and timestamp)
+        const rows = players.map(p => [p.name, p.hours, expenseFor(p)]);
         const meta = [`ราคา/ชม.: ${pricePerHour} ฿`, `สร้างเมื่อ: ${new Date().toLocaleString('th-TH')}`, ''];
         const csvLines = [];
         csvLines.push(meta.join(','));
         csvLines.push(headers.join(','));
         rows.forEach(r => {
-          // escape commas and quotes
           const line = r.map(cell => {
             const s = String(cell).replace(/"/g,'""');
             return s.includes(',') || s.includes('"') ? `"${s}"` : s;
@@ -394,7 +411,6 @@
 
       // Share (Web Share API with fallback to copy CSV text)
       async function shareData(){
-        // Prepare a short summary text and CSV as fallback
         const summary = `ก๊วนแบดมินตัน — สมาชิก ${players.length}, รวมชั่วโมง ${players.reduce((s,p)=>s+p.hours,0)}, รวมค่าใช้จ่าย ${players.reduce((s,p)=>s+expenseFor(p),0)} ฿`;
         if(navigator.share){
           try{
@@ -405,12 +421,10 @@
             });
             return;
           }catch(err){
-            // user cancelled or failed, fallback to copy
+            // fallback
           }
         }
-        // Fallback: copy CSV to clipboard (if allowed) or copy page URL
         try{
-          // try to copy CSV text
           const headers = ['ชื่อ','ชั่วโมง','ค่าใช้จ่าย(฿)'];
           const rows = players.map(p => [p.name, p.hours, expenseFor(p)]);
           const csvLines = [];
@@ -421,7 +435,6 @@
           await navigator.clipboard.writeText(csv);
           alert('ข้อมูลถูกคัดลอกเป็น CSV ไปยังคลิปบอร์ดแล้ว คุณสามารถวาง (paste) เพื่อแชร์ได้');
         }catch(e){
-          // final fallback: copy page URL
           try{
             await navigator.clipboard.writeText(location.href);
             alert('ไม่สามารถแชร์โดยตรง ได้คัดลอกลิงก์หน้าเว็บไปยังคลิปบอร์ดแล้ว');
