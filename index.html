@@ -177,12 +177,7 @@
       const $$ = (sel, root=document) => Array.from(root.querySelectorAll(sel));
       const formatCurrency = v => Number(v).toLocaleString('th-TH');
 
-      // Default sample data (no index column)
-      const SAMPLE = [
-        { id: 1, name: "A", hours: 0 },
-        { id: 2, name: "B", hours: 0 },
-        { id: 3, name: "C", hours: 0 }
-      ];
+
 
       let players = [];
       let pricePerHour = 48;
