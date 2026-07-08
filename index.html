@@ -83,6 +83,7 @@
     .left{flex:1}
     .right{width:320px;flex-shrink:0}
 
+    /* Table base */
     table{width:100%;border-collapse:collapse;background:transparent;border-radius:10px;overflow:hidden}
     thead th{background:linear-gradient(180deg,rgba(255,255,255,0.6),rgba(255,255,255,0.5));text-align:left;padding:12px 14px;font-weight:700;color:var(--muted);font-size:13px;border-bottom:1px solid rgba(15,23,36,0.04)}
     tbody td{padding:12px 14px;border-bottom:1px solid rgba(15,23,36,0.04);vertical-align:middle;background:transparent}
@@ -100,6 +101,30 @@
     button.btn-primary:hover{transform:translateY(-2px);box-shadow:0 12px 30px rgba(91,139,255,0.12)}
     .row-action:hover{transform:translateY(-2px)}
     .danger{background:var(--danger);color:#fff}
+
+    /* Auto-resize inputs and table overflow fixes */
+    *, *::before, *::after { box-sizing: border-box; }
+
+    /* Allow table to scroll horizontally if content is wide */
+    .left { overflow-x: auto; } /* container scroll */
+    table { table-layout: auto; width: 100%; }
+
+    /* Ensure cells can shrink properly */
+    td, th { min-width: 0; }
+
+    /* Player name input: allow auto width but cap to cell width */
+    input.player-name {
+      display: inline-block;
+      width: auto;           /* JS will set width */
+      min-width: 120px;
+      max-width: 100%;
+      white-space: nowrap;
+      overflow: hidden;
+      text-overflow: ellipsis;
+      box-sizing: content-box; /* measurement uses content width */
+    }
+
+    input.player-name[title] { cursor: help; }
 
     @media (max-width:920px){
       .layout{flex-direction:column}
@@ -170,7 +195,6 @@
             <input id="newPlayerHours" type="number" min="0" value="0" />
             <div style="display:flex;gap:10px;margin-top:12px">
               <button id="addPlayerBtn" class="btn-primary small">เพิ่ม</button>
-              <button id="addEditPlayerBtn" class="btn-ghost small">เพิ่มแล้วแก้ไข</button>
             </div>
           </div>
 
@@ -227,7 +251,6 @@
     // Elements
     const playersTbody = $("#playersTbody");
     const addPlayerBtn = $("#addPlayerBtn");
-    const addEditPlayerBtn = $("#addEditPlayerBtn");
     const newPlayerName = $("#newPlayerName");
     const newPlayerHours = $("#newPlayerHours");
     const pricePerHourInput = $("#pricePerHour");
@@ -247,6 +270,32 @@
     const ECHO_THRESHOLD_MS = 1500;
     let writeTimer = null;
     const DEBOUNCE_MS = 200;
+
+    // Create canvas context for measuring text width
+    const textMeasureCanvas = document.createElement('canvas');
+    const textMeasureCtx = textMeasureCanvas.getContext('2d');
+
+    function setInputFontForMeasure(input) {
+      const style = window.getComputedStyle(input);
+      const fontWeight = style.fontWeight || '600';
+      const fontSize = style.fontSize || '14px';
+      const fontFamily = style.fontFamily || 'Inter, system-ui, Arial';
+      textMeasureCtx.font = `${fontWeight} ${fontSize} ${fontFamily}`;
+    }
+
+    function autoResizeInput(input, extra = 18) {
+      if (!input) return;
+      setInputFontForMeasure(input);
+      const value = input.value || input.placeholder || '';
+      const measured = Math.ceil(textMeasureCtx.measureText(value).width);
+      const parent = input.parentElement;
+      const parentPadding = 24; // approximate padding in cell
+      const max = parent ? Math.max(120, parent.clientWidth - parentPadding) : 600;
+      const min = 120;
+      const newWidth = Math.min(Math.max(measured + extra, min), max);
+      input.style.width = newWidth + 'px';
+      input.title = value;
+    }
 
     // Utilities
     function sortPlayers(arr) {
@@ -274,7 +323,7 @@
           tr.dataset.id = p.id;
           tr.innerHTML = `
             <td style="font-weight:700">${idx + 1}</td>
-            <td><input class="player-name" data-id="${p.id}" value="${escapeHtml(p.name)}" style="width:100%"/></td>
+            <td><input class="player-name" data-id="${p.id}" value="${escapeHtml(p.name)}"/></td>
             <td><input class="player-hours" data-id="${p.id}" type="number" min="0" value="${p.hours}" style="width:80px"/></td>
             <td style="font-weight:700">${cost} ฿</td>
             <td><div class="actions"><button class="small btn-primary row-action inc" data-id="${p.id}">+1</button></div></td>
@@ -282,6 +331,14 @@
             <td><button class="small btn-danger row-action delete" data-id="${p.id}">ลบ</button></td>
           `;
           playersTbody.appendChild(tr);
+
+          // After appending, auto-resize the name input
+          const nameInput = tr.querySelector('input.player-name');
+          if (nameInput) {
+            // ensure value is unescaped for measurement
+            nameInput.value = p.name || "";
+            autoResizeInput(nameInput);
+          }
         });
       }
       updateSummary();
@@ -320,10 +377,12 @@
         lastLocalWriteMs = Date.now();
         connectionStatus.textContent = "Saved";
         connectionStatus.classList.remove("muted");
+        return true;
       } catch (err) {
         console.error("Save failed", err);
         connectionStatus.textContent = "Save failed";
         connectionStatus.classList.add("muted");
+        return false;
       }
     }
 
@@ -406,10 +465,11 @@
       else if (btn.classList.contains("delete")) deletePlayer(id);
     });
 
-    // Inline edits
+    // Inline edits (with auto-resize)
     playersTbody.addEventListener("input", (ev) => {
       const nameInput = ev.target.closest("input.player-name");
       if (nameInput) {
+        autoResizeInput(nameInput);
         const id = nameInput.dataset.id;
         const p = state.players.find(x => String(x.id) === String(id));
         if (p && p.name !== nameInput.value) {
@@ -431,7 +491,7 @@
     });
 
     // Add player
-    addPlayerBtn.addEventListener("click", () => {
+    addPlayerBtn.addEventListener("click", async () => {
       const name = (newPlayerName.value || "").trim();
       const hours = Number(newPlayerHours.value || 0);
       if (!name) { newPlayerName.focus(); return; }
@@ -440,24 +500,7 @@
       newPlayerName.value = "";
       newPlayerHours.value = "0";
       render();
-      scheduleSave();
-    });
-
-    // Add then edit (focus newly added)
-    addEditPlayerBtn.addEventListener("click", () => {
-      const name = (newPlayerName.value || "").trim();
-      const hours = Number(newPlayerHours.value || 0);
-      if (!name) { newPlayerName.focus(); return; }
-      const id = Date.now() + Math.floor(Math.random() * 1000);
-      state.players.push({ id, name, hours });
-      newPlayerName.value = "";
-      newPlayerHours.value = "0";
-      render();
-      scheduleSave();
-      setTimeout(() => {
-        const input = playersTbody.querySelector(`input.player-name[data-id="${id}"]`);
-        if (input) { input.focus(); input.select(); }
-      }, 50);
+      await saveToFirestore();
     });
 
     // Price change
