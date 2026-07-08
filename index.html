@@ -3,461 +3,485 @@
 <head>
   <meta charset="utf-8" />
   <meta name="viewport" content="width=device-width,initial-scale=1" />
-  <title>ก๊วนแบดมินตัน — จัดการสมาชิก</title>
-  <meta name="description" content="Devloped by Ball Rittha 0957602580" />
-
+  <title>ก๊วนคนรักแบดมินตัน</title>
   <style>
-    :root{
-      --bg1:#fff7fb;
-      --bg2:#f3f0ff;
-      --card:#ffffff;
-      --muted:#6b7280;
-      --accent:#ec4899;
-      --accent-2:#7c3aed;
-      --success:#16a34a;
-      --danger:#ef4444;
-      --radius:14px;
-      --shadow: 0 8px 30px rgba(15,23,42,0.08);
-      font-family: Inter, ui-sans-serif, system-ui, -apple-system, "Segoe UI", Roboto, "Helvetica Neue", Arial;
-    }
-    *{box-sizing:border-box}
-    html,body{height:100%}
-    body{
-      margin:0;
-      background: linear-gradient(135deg,var(--bg1),var(--bg2));
-      padding:28px;
-      -webkit-font-smoothing:antialiased;
-      -moz-osx-font-smoothing:grayscale;
-      color:#0f172a;
-    }
-
-    .container{max-width:1100px;margin:0 auto}
-    .card{background:var(--card);border-radius:var(--radius);padding:20px;box-shadow:var(--shadow);overflow:hidden}
-    header.app-header{display:flex;gap:16px;align-items:center;justify-content:space-between;margin-bottom:18px}
-    .brand{display:flex;gap:12px;align-items:center}
-    .logo{width:56px;height:56px;border-radius:12px;display:grid;place-items:center;background:linear-gradient(135deg,var(--accent),var(--accent-2));color:white;font-weight:700;font-size:20px;box-shadow: 0 6px 18px rgba(124,58,237,0.18)}
-    h1{margin:0;font-size:20px}
-    p.lead{margin:0;color:var(--muted);font-size:13px}
-
-    .controls{display:flex;gap:10px;align-items:center;flex-wrap:wrap}
-    .btn{border:0;padding:10px 14px;border-radius:10px;cursor:pointer;font-weight:600;color:white;background:var(--accent);box-shadow: 0 6px 18px rgba(236,72,153,0.12)}
-    .btn.secondary{background:linear-gradient(90deg,var(--accent-2),#5b21b6);box-shadow: 0 6px 18px rgba(124,58,237,0.12)}
-    .btn.ghost{background:transparent;color:var(--muted);border:1px solid #eef2ff;box-shadow:none}
-
-    .grid{display:grid;grid-template-columns: 1fr 320px;gap:18px;margin-top:12px}
-
-    /* Table container with vertical scrollbar when content grows */
-    .table-wrap{
-      overflow:auto;
-      border-radius:12px;
-      border:1px solid #f1f5f9;
-      max-height:420px; /* ปรับค่านี้ตามต้องการ */
-    }
-    table{width:100%;border-collapse:collapse;min-width:640px}
-    thead th{text-align:left;padding:12px 16px;background:linear-gradient(90deg,#fff 0%, #fbf8ff 100%);font-size:13px;color:#374151;position:sticky;top:0;z-index:2}
-    tbody td{padding:12px 16px;border-top:1px solid #f8fafc;vertical-align:middle;font-size:14px;color:#0f172a}
-    tbody tr:hover{background:#fff7fb}
-    .small{font-size:13px;color:var(--muted)}
-    .center{text-align:center}
-    .actions{display:flex;gap:8px;justify-content:center}
-
-    .icon-btn{border:0;background:#eef2ff;color:#1e3a8a;padding:8px;border-radius:8px;cursor:pointer;min-width:36px;display:inline-grid;place-items:center}
-    .icon-btn.danger{background:#fff1f2;color:var(--danger)}
-    .icon-btn.success{background:#ecfdf5;color:var(--success)}
-
-    input[type="number"], input[type="text"]{padding:8px 10px;border-radius:8px;border:1px solid #e6edf3;font-size:14px;width:100%}
-
-    .panel{background:linear-gradient(180deg,#ffffff, #fbf8ff);border-radius:12px;padding:14px;box-shadow: 0 6px 18px rgba(99,102,241,0.04)}
-    .panel h3{margin:0 0 8px 0}
-    .row{display:flex;gap:8px;align-items:center;margin-bottom:10px}
+    /* Preserve UI layout and appearance (do not change layout/colors/positions) */
+    :root{--bg:#fff6f8;--card:#fff;--muted:#666;--accent:#ff6b81}
+    html,body{height:100%;margin:0;font-family:Inter,ui-sans-serif,system-ui,-apple-system,"Segoe UI",Roboto,"Helvetica Neue",Arial}
+    body{background:var(--bg);padding:20px;color:#111}
+    .app{max-width:1100px;margin:0 auto}
+    header{display:flex;align-items:center;justify-content:space-between;margin-bottom:12px}
+    h1{font-size:20px;margin:0;display:flex;gap:12px;align-items:center}
+    .logo{width:36px;height:36px;border-radius:6px;background:linear-gradient(135deg,#ffd6e0,#fff);display:flex;align-items:center;justify-content:center;font-weight:700;color:var(--accent)}
+    .controls{display:flex;gap:8px;align-items:center}
+    .card{background:var(--card);padding:12px;border-radius:10px;box-shadow:0 1px 2px rgba(0,0,0,.04)}
+    .layout{display:flex;gap:16px}
+    .left{flex:1}
+    .right{width:320px}
+    .row{display:flex;gap:8px;align-items:center}
+    input[type="text"],input[type="number"],select,textarea{padding:8px;border:1px solid #eee;border-radius:6px}
+    button{background:var(--accent);color:#fff;border:0;padding:8px 10px;border-radius:6px;cursor:pointer}
+    button.ghost{background:transparent;color:var(--accent);border:1px solid rgba(255,107,129,0.15)}
+    table{width:100%;border-collapse:collapse;margin-top:12px;background:#fff;border-radius:6px;overflow:hidden}
+    th,td{padding:10px;border-bottom:1px solid #f3e9ec;text-align:left}
+    th{font-weight:700;color:var(--muted);font-size:14px;background:linear-gradient(180deg,#fff,#fff)}
+    .actions{display:flex;gap:6px}
+    .small{padding:6px 8px;font-size:13px;border-radius:6px}
     .muted{color:var(--muted);font-size:13px}
-    .total{display:flex;justify-content:space-between;align-items:center;padding:12px;border-radius:10px;background:linear-gradient(90deg,#fff,#f8fafc);margin-top:12px;font-weight:700}
-
-    /* custom scrollbar (modern browsers) */
-    .table-wrap::-webkit-scrollbar{width:12px}
-    .table-wrap::-webkit-scrollbar-track{background:transparent}
-    .table-wrap::-webkit-scrollbar-thumb{background:linear-gradient(180deg,#e9d5ff,#fbcfe8);border-radius:10px;border:3px solid transparent;background-clip:padding-box}
-
-    @media (max-width:920px){.grid{grid-template-columns:1fr;}table{min-width:560px}}
-    @media (max-width:640px){table{min-width:520px}.logo{width:48px;height:48px;font-size:18px}}
+    .status{font-size:13px;color:#444;margin-left:8px}
+    .summary{margin-top:12px;display:flex;flex-direction:column;gap:8px}
+    .panel{background:linear-gradient(180deg,#fff,#fff);padding:12px;border-radius:8px;border:1px solid #fff}
+    .danger{background:#fb0c0c}
+    label{font-size:13px;color:var(--muted);display:block;margin-bottom:6px}
+    .right .panel h3{margin:0 0 8px 0;font-size:16px}
+    .note{font-size:12px;color:var(--muted)}
+    @media (max-width:900px){.layout{flex-direction:column}.right{width:100%}}
   </style>
 </head>
 <body>
-  <div class="container">
-    <div class="card" role="application" aria-label="จัดการสมาชิกก๊วนแบดมินตัน">
-      <header class="app-header">
-        <div class="brand">
-          <div class="logo" aria-hidden="true">🏸</div>
-          <div>
-            <h1>ก๊วนคนรักแบดมินตัน</h1>
-            <p class="lead">Developed by Ball Rittha 0957602580</p>
-          </div>
-        </div>
-
-        <div class="controls" aria-hidden="false">
-          <button id="resetBtn" class="btn ghost" title="รีเซ็ตข้อมูลตัวอย่าง">รีเซ็ต</button>
-          <button id="clearStorageBtn" class="btn ghost" title="ล้างข้อมูลที่เก็บไว้">ล้างข้อมูล</button>
-          <button id="shareBtn" class="btn ghost" title="แชร์ข้อมูล">แชร์</button>
-          <button id="exportBtn" class="btn ghost" title="Export CSV">Export CSV</button>
-          
-        </div>
-      </header>
-
-      <div class="grid">
-        <!-- Left: Table -->
+  <div class="app">
+    <header>
+      <h1>
+        <span class="logo">🏸</span>
         <div>
-          <div class="small muted">ตั้งค่า</div>
-          <div style="display:flex;gap:10px;align-items:center;margin:8px 0 14px 0">
-            <label class="small muted" for="priceInput">ราคา ต่อชั่วโมง</label>
-            <input id="priceInput" type="number" min="0" step="1" value="48" style="width:120px" aria-label="ราคา ต่อชั่วโมง">
-            <div class="muted" style="margin-left:auto">ค่าใช้จ่ายจะคำนวณอัตโนมัติ</div>
-          </div>
+          ก๊วนคนรักแบดมินตัน
+          <div style="font-size:12px;color:var(--muted)">Developed by Ball Rittha 0957602580</div>
+        </div>
+      </h1>
+      <div class="controls">
+        <div class="muted">Room: <strong id="roomIdDisplay">main</strong></div>
+        <div id="connectionStatus" class="status muted">Connecting…</div>
+      </div>
+    </header>
 
-          <div class="table-wrap" role="region" aria-label="ตารางสมาชิก">
-            <table id="playersTable" aria-describedby="tableDesc">
-              <caption id="tableDesc" style="display:none">ตารางแสดงสมาชิก จำนวนชั่วโมง และค่าใช้จ่าย</caption>
-              <thead>
-                <tr>
-                  <th>ชื่อ</th>
-                  <th class="center">ชม.</th>
-                  <th class="center">ค่าใช้จ่าย</th>
-                  <th class="center">เพิ่ม</th>
-                  <th class="center">ลด</th>
-                  <th class="center">ลบ</th>
-                </tr>
-              </thead>
-              <tbody id="tbody">
-                <!-- rows injected by JS -->
-              </tbody>
-            </table>
+    <div class="card">
+      <div class="row" style="justify-content:space-between;margin-bottom:12px">
+        <div style="display:flex;gap:12px;align-items:center">
+          <div>
+            <label class="muted">ตั้งค่า</label>
+            <div style="display:flex;gap:8px;align-items:center">
+              <div class="muted">ราคา ต่อชั่วโมง</div>
+              <input id="pricePerHour" type="number" min="0" value="46" style="width:100px"/>
+            </div>
+            <div class="note">ค่าใช้จ่ายจะคำนวณอัตโนมัติ</div>
           </div>
         </div>
 
-        <!-- Right: Controls and summary -->
-        <aside class="panel" aria-label="สรุปและเพิ่มสมาชิก">
-          <h3>เพิ่มสมาชิกใหม่</h3>
-          <div class="row">
-            <input id="newName" type="text" placeholder="ชื่อสมาชิก" aria-label="ชื่อสมาชิก">
-          </div>
-          <div class="row">
-            <input id="newHours" type="number" min="0" step="1" value="0" aria-label="ชั่วโมงเริ่มต้น">
-          </div>
-          <div style="display:flex;gap:8px">
-            <button id="createBtn" class="btn">เพิ่ม</button>
-            <button id="createAndEditBtn" class="btn ghost">เพิ่มแล้วแก้ไข</button>
+        <div style="display:flex;gap:8px;align-items:center">
+          <button id="resetBtn" class="ghost small">รีเซ็ต</button>
+          <button id="clearBtn" class="ghost small">ล้างข้อมูล</button>
+          <button id="shareBtn" class="ghost small">แชร์</button>
+          <button id="exportBtn" class="ghost small">Export CSV</button>
+        </div>
+      </div>
+
+      <div class="layout">
+        <div class="left">
+          <table id="playersTable" aria-live="polite">
+            <thead>
+              <tr>
+                <th style="width:40px">#</th>
+                <th>ชื่อ</th>
+                <th style="width:100px">ชม.</th>
+                <th style="width:120px">ค่าใช้จ่าย</th>
+                <th style="width:160px">เพิ่ม</th>
+                <th style="width:160px">ลด</th>
+                <th style="width:80px">ลบ</th>
+              </tr>
+            </thead>
+            <tbody id="playersTbody"></tbody>
+          </table>
+        </div>
+
+        <div class="right">
+          <div class="panel">
+            <h3>เพิ่มสมาชิกใหม่</h3>
+            <label>ชื่อสมาชิก</label>
+            <input id="newPlayerName" type="text" placeholder="ชื่อสมาชิก" />
+            <label style="margin-top:8px">จำนวนชั่วโมง</label>
+            <input id="newPlayerHours" type="number" min="0" value="0" />
+            <div style="display:flex;gap:8px;margin-top:10px">
+              <button id="addPlayerBtn" class="small">เพิ่ม</button>
+              <button id="addEditPlayerBtn" class="small ghost">เพิ่มแล้วแก้ไข</button>
+            </div>
           </div>
 
-          <div style="margin-top:16px">
-            <div class="muted">สรุป</div>
-            <div class="total" aria-live="polite">
-              <div>สมาชิกทั้งหมด</div>
-              <div id="count">0</div>
-            </div>
-            <div class="total" style="margin-top:8px" aria-live="polite">
-              <div>รวมชั่วโมง</div>
-              <div id="sumHours">0</div>
-            </div>
-            <div class="total" style="margin-top:8px" aria-live="polite">
-              <div>รวมค่าใช้จ่าย</div>
-              <div id="sumExpense">0</div>
-            </div>
+          <div class="panel" style="margin-top:12px">
+            <h3>สรุป</h3>
+            <div class="muted">สมาชิกทั้งหมด <strong id="count">0</strong></div>
+            <div class="muted">รวมชั่วโมง <strong id="totalHours">0</strong></div>
+            <div class="muted">รวมค่าใช้จ่าย <strong id="totalCost">0 ฿</strong></div>
+            <div class="note" style="margin-top:8px">สามารถใช้ได้ทุกแพลตฟอร์ม</div>
           </div>
-
-          <div style="margin-top:14px" class="muted small">
-            สามารถใช้ได้ทุกแพลตฟอร์ม
-          </div>
-        </aside>
+        </div>
       </div>
     </div>
   </div>
 
-  <script>
-    (function(){
-      const $ = (sel, root=document) => root.querySelector(sel);
-      const $$ = (sel, root=document) => Array.from(root.querySelectorAll(sel));
-      const formatCurrency = v => Number(v).toLocaleString('th-TH');
+  <!-- Firebase v9 modular CDN (ES modules) -->
+  <script type="module">
+    // Firebase configuration (provided)
+    const firebaseConfig = {
+      apiKey: "...",
+      authDomain: "...",
+      projectId: "badminton-games-c8e4e",
+      storageBucket: "...",
+      messagingSenderId: "...",
+      appId: "...",
+      measurementId: "..."
+    };
 
+    import { initializeApp } from "https://www.gstatic.com/firebasejs/9.22.2/firebase-app.js";
+    import {
+      getFirestore,
+      doc,
+      setDoc,
+      onSnapshot,
+      serverTimestamp,
+      getDoc
+    } from "https://www.gstatic.com/firebasejs/9.22.2/firebase-firestore.js";
 
+    // Init Firebase
+    const app = initializeApp(firebaseConfig);
+    const db = getFirestore(app);
 
-      let players = [];
-      let pricePerHour = 48;
-      const STORAGE_KEY = 'badminton_roster_v3';
+    // Helpers
+    const $ = (s, el = document) => el.querySelector(s);
+    const escapeHtml = (s = "") => String(s)
+      .replaceAll("&", "&amp;").replaceAll("<", "&lt;").replaceAll(">", "&gt;")
+      .replaceAll('"', "&quot;").replaceAll("'", "&#039;");
 
-      const tbody = $('#tbody');
-      const priceInput = $('#priceInput');
-      const countEl = $('#count');
-      const sumHoursEl = $('#sumHours');
-      const sumExpenseEl = $('#sumExpense');
-      const addRowBtn = $('#addRowBtn');
-      const createBtn = $('#createBtn');
-      const createAndEditBtn = $('#createAndEditBtn');
-      const newName = $('#newName');
-      const newHours = $('#newHours');
-      const resetBtn = $('#resetBtn');
-      const clearStorageBtn = $('#clearStorageBtn');
-      const shareBtn = $('#shareBtn');
-      const exportBtn = $('#exportBtn');
+    // Room from URL
+    const room = new URLSearchParams(location.search).get("room") || "main";
+    $("#roomIdDisplay").textContent = room;
+    const roomDocRef = doc(db, "rooms", room);
 
-      function load(){
-        try{
-          const raw = localStorage.getItem(STORAGE_KEY);
-          if(raw){
-            const parsed = JSON.parse(raw);
-            players = parsed.players || [];
-            pricePerHour = parsed.pricePerHour ?? pricePerHour;
-          } else {
-           players = [];
-          }
-        }catch(e){
-          console.error('load error', e);
-          players = SAMPLE.slice();
-        }
-        priceInput.value = pricePerHour;
-        render();
-      }
+    // Elements
+    const playersTbody = $("#playersTbody");
+    const addPlayerBtn = $("#addPlayerBtn");
+    const addEditPlayerBtn = $("#addEditPlayerBtn");
+    const newPlayerName = $("#newPlayerName");
+    const newPlayerHours = $("#newPlayerHours");
+    const pricePerHourInput = $("#pricePerHour");
+    const countEl = $("#count");
+    const totalHoursEl = $("#totalHours");
+    const totalCostEl = $("#totalCost");
+    const resetBtn = $("#resetBtn");
+    const clearBtn = $("#clearBtn");
+    const exportBtn = $("#exportBtn");
+    const shareBtn = $("#shareBtn");
+    const connectionStatus = $("#connectionStatus");
 
-      function save(){
-        try{
-          localStorage.setItem(STORAGE_KEY, JSON.stringify({ players, pricePerHour }));
-        }catch(e){
-          console.warn('save failed', e);
-        }
-      }
+    // State
+    let state = { pricePerHour: 46, players: [], updatedAt: null };
+    let unsubscribe = null;
+    let lastLocalWriteMs = 0;
+    const ECHO_THRESHOLD_MS = 1500;
+    let writeTimer = null;
+    const DEBOUNCE_MS = 200;
 
-      function expenseFor(p){
-        return Math.max(0, Math.round(p.hours * pricePerHour));
-      }
+    // Utilities
+    function sortPlayers(arr) {
+      return arr.slice().sort((a, b) => {
+        const an = (a.name || "").toLowerCase();
+        const bn = (b.name || "").toLowerCase();
+        if (an < bn) return -1;
+        if (an > bn) return 1;
+        return (a.id || 0) - (b.id || 0);
+      });
+    }
 
-      // Sort players by hours ascending, then by name for stable order
-      function sortPlayers(){
-        players.sort((a,b) => {
-          if (a.hours !== b.hours) return a.hours - b.hours;
-          return String(a.name).localeCompare(String(b.name), 'th');
-        });
-      }
-
-      function render(){
-        // ensure sorted before render
-        sortPlayers();
-
-        tbody.innerHTML = '';
-        players.forEach((p) => {
-          const tr = document.createElement('tr');
+    // Render UI (Thai labels preserved)
+    function render() {
+      playersTbody.innerHTML = "";
+      const players = sortPlayers(state.players || []);
+      if (players.length === 0) {
+        const tr = document.createElement("tr");
+        tr.innerHTML = `<td colspan="7" class="muted">ไม่ระบุ</td>`;
+        playersTbody.appendChild(tr);
+      } else {
+        players.forEach((p, idx) => {
+          const cost = (Number(p.hours || 0) * Number(state.pricePerHour || 0)) || 0;
+          const tr = document.createElement("tr");
+          tr.dataset.id = p.id;
           tr.innerHTML = `
-            <td>
-              <input type="text" data-id="${p.id}" class="name-input" value="${escapeHtml(p.name)}" />
-            </td>
-            <td class="center">
-              <input type="number" min="0" step="1" data-id="${p.id}" class="hours-input" value="${p.hours}" style="width:72px" />
-            </td>
-            <td class="center small">${formatCurrency(expenseFor(p))} ฿</td>
-            <td class="center">
-              <button class="icon-btn success inc-btn" data-id="${p.id}" title="เพิ่ม 1 ชั่วโมง">＋</button>
-            </td>
-            <td class="center">
-              <button class="icon-btn danger dec-btn" data-id="${p.id}" title="ลด 1 ชั่วโมง">－</button>
-            </td>
-            <td class="center">
-              <div class="actions">
-                <button class="icon-btn delete-btn" data-id="${p.id}" title="ลบสมาชิก">🗑</button>
-              </div>
-            </td>
+            <td>${idx + 1}</td>
+            <td><input class="player-name" data-id="${p.id}" value="${escapeHtml(p.name)}" style="width:100%"/></td>
+            <td><input class="player-hours" data-id="${p.id}" type="number" min="0" value="${p.hours}" style="width:80px"/></td>
+            <td>${cost} ฿</td>
+            <td><div class="actions"><button class="small inc" data-id="${p.id}">[+]</button></div></td>
+            <td><div class="actions"><button class="small dec" data-id="${p.id}">[-]</button></div></td>
+            <td><button class="small delete danger" data-id="${p.id}">🗑️</button></td>
           `;
-          tbody.appendChild(tr);
+          playersTbody.appendChild(tr);
         });
-
-        // Attach events
-        $$('.inc-btn').forEach(btn => btn.addEventListener('click', onInc));
-        $$('.dec-btn').forEach(btn => btn.addEventListener('click', onDec));
-        $$('.delete-btn').forEach(btn => btn.addEventListener('click', onDelete));
-        $$('.hours-input').forEach(inp => inp.addEventListener('change', onHoursChange));
-        $$('.name-input').forEach(inp => inp.addEventListener('change', onNameChange));
-
-        updateSummary();
-        save();
       }
+      updateSummary();
+    }
 
-      function onInc(e){
-        const id = Number(e.currentTarget.dataset.id);
-        players = players.map(p => p.id === id ? ({...p, hours: p.hours + 1}) : p);
-        render();
+    function updateSummary() {
+      const players = state.players || [];
+      const totalPlayers = players.length;
+      const totalHours = players.reduce((s, p) => s + Number(p.hours || 0), 0);
+      const price = Number(state.pricePerHour || 0);
+      countEl.textContent = totalPlayers;
+      totalHoursEl.textContent = totalHours;
+      totalCostEl.textContent = `${(totalHours * price).toFixed(2)} ฿`;
+      if (Number(pricePerHourInput.value) !== Number(price)) {
+        pricePerHourInput.value = price;
       }
-      function onDec(e){
-        const id = Number(e.currentTarget.dataset.id);
-        players = players.map(p => p.id === id ? ({...p, hours: Math.max(0, p.hours - 1)}) : p);
-        render();
+    }
+
+    // Debounced save
+    function scheduleSave() {
+      if (writeTimer) clearTimeout(writeTimer);
+      writeTimer = setTimeout(() => {
+        writeTimer = null;
+        saveToFirestore();
+      }, DEBOUNCE_MS);
+    }
+
+    async function saveToFirestore() {
+      try {
+        const payload = {
+          pricePerHour: Number(state.pricePerHour || 0),
+          players: (state.players || []).map(p => ({ id: p.id, name: p.name, hours: Number(p.hours || 0) })),
+          updatedAt: serverTimestamp()
+        };
+        await setDoc(roomDocRef, payload);
+        lastLocalWriteMs = Date.now();
+        connectionStatus.textContent = "Saved";
+        connectionStatus.classList.remove("muted");
+      } catch (err) {
+        console.error("Save failed", err);
+        connectionStatus.textContent = "Save failed";
+        connectionStatus.classList.add("muted");
       }
-      function onDelete(e){
-        const id = Number(e.currentTarget.dataset.id);
-        if(!confirm('ต้องการลบสมาชิกนี้จริงหรือไม่')) return;
-        players = players.filter(p => p.id !== id);
-        render();
+    }
+
+    // Apply remote snapshot
+    function applyRemoteData(remote) {
+      if (!remote) return;
+      const remoteUpdatedAt = remote.updatedAt && remote.updatedAt.toMillis ? remote.updatedAt.toMillis() : null;
+      if (lastLocalWriteMs && remoteUpdatedAt && Math.abs(remoteUpdatedAt - lastLocalWriteMs) < ECHO_THRESHOLD_MS) {
+        connectionStatus.textContent = "Synced";
+        return;
       }
-      function onHoursChange(e){
-        const id = Number(e.currentTarget.dataset.id);
-        const val = Math.max(0, Math.floor(Number(e.currentTarget.value) || 0));
-        players = players.map(p => p.id === id ? ({...p, hours: val}) : p);
-        render();
+      const remotePlayers = Array.isArray(remote.players) ? remote.players.map(p => ({ id: p.id, name: p.name, hours: Number(p.hours || 0) })) : [];
+      const remotePrice = Number(remote.pricePerHour || 0);
+      const localJson = JSON.stringify({ pricePerHour: state.pricePerHour, players: sortPlayers(state.players || []) });
+      const remoteJson = JSON.stringify({ pricePerHour: remotePrice, players: sortPlayers(remotePlayers) });
+      if (localJson === remoteJson) {
+        connectionStatus.textContent = "Up to date";
+        return;
       }
-      function onNameChange(e){
-        const id = Number(e.currentTarget.dataset.id);
-        const val = String(e.currentTarget.value || '').trim() || 'ไม่ระบุ';
-        players = players.map(p => p.id === id ? ({...p, name: val}) : p);
-        render();
-      }
+      state.pricePerHour = remotePrice;
+      state.players = sortPlayers(remotePlayers);
+      state.updatedAt = remoteUpdatedAt;
+      render();
+      connectionStatus.textContent = "Updated";
+    }
 
-      function addMember(name,hours=0){
-         const id = Date.now() + Math.floor(Math.random()*1000);
-         players.push({ id, name: String(name||'ไม่ระบุ'), hours });
-         render();
-       }
-
-      function updateSummary(){
-        const count = players.length;
-        const sumHours = players.reduce((s,p)=>s+p.hours,0);
-        const sumExpense = players.reduce((s,p)=>s+expenseFor(p),0);
-        countEl.textContent = count;
-        sumHoursEl.textContent = sumHours;
-        sumExpenseEl.textContent = formatCurrency(sumExpense) + ' ฿';
-      }
-
-      function escapeHtml(s){
-        return String(s).replace(/[&<>"']/g, function(m){ return ({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#39;'}[m])});
-      }
-
-      priceInput.addEventListener('change', () => {
-        const v = Math.max(0, Math.round(Number(priceInput.value) || 0));
-        pricePerHour = v;
-        priceInput.value = v;
-        render();
-      });
-
-      if (addRowBtn) {
-        addRowBtn.addEventListener('click', () => {
-          newName.focus();
-          addMember('ไม่ระบุ', 0);
-        });
-      } 
-
-      createBtn.addEventListener('click', () => {
-        const name = newName.value.trim() || 'ไม่ระบุ';
-        const hours = Math.max(0, Math.floor(Number(newHours.value) || 0));
-        addMember(name, hours);
-        newName.value = '';
-        newHours.value = 0;
-      });
-
-      createAndEditBtn.addEventListener('click', () => {
-        createBtn.click();
-        setTimeout(()=> {
-          const lastNameInput = tbody.querySelector('input.name-input:last-of-type');
-          if(lastNameInput) lastNameInput.focus();
-        }, 50);
-      });
-
-      resetBtn.addEventListener('click', () => {
-
-             if(!confirm('รีเซ็ตข้อมูลทั้งหมด ?')) return;
-
-               players = [];
-
-              save();
-
-               render();
-
-      });
- 
-      clearStorageBtn.addEventListener('click', () => {
-        if(!confirm('ล้างข้อมูลที่เก็บไว้ในเบราว์เซอร์?')) return;
-        localStorage.removeItem(STORAGE_KEY);
-        load();
-      });
-
-      // Export CSV
-      function exportCSV(){
-        const headers = ['ชื่อ','ชั่วโมง','ค่าใช้จ่าย(฿)'];
-        const rows = players.map(p => [p.name, p.hours, expenseFor(p)]);
-        const meta = [`ราคา/ชม.: ${pricePerHour} ฿`, `สร้างเมื่อ: ${new Date().toLocaleString('th-TH')}`, ''];
-        const csvLines = [];
-        csvLines.push(meta.join(','));
-        csvLines.push(headers.join(','));
-        rows.forEach(r => {
-          const line = r.map(cell => {
-            const s = String(cell).replace(/"/g,'""');
-            return s.includes(',') || s.includes('"') ? `"${s}"` : s;
-          }).join(',');
-          csvLines.push(line);
-        });
-        const csv = csvLines.join('\n');
-        const blob = new Blob(['\uFEFF'+csv],{type:'text/csv;charset=utf-8;'});
-        const url = URL.createObjectURL(blob);
-        const a = document.createElement('a');
-        a.href = url;
-        const filename = `badminton_roster_${new Date().toISOString().slice(0,19).replace(/[:T]/g,'-')}.csv`;
-        a.download = filename;
-        document.body.appendChild(a);
-        a.click();
-        a.remove();
-        URL.revokeObjectURL(url);
-      }
-
-      exportBtn.addEventListener('click', () => {
-        try{
-          exportCSV();
-        }catch(e){
-          alert('เกิดข้อผิดพลาดขณะ Export CSV');
-          console.error(e);
-        }
-      });
-
-      // Share (Web Share API with fallback to copy CSV text)
-      async function shareData(){
-        const summary = `ก๊วนแบดมินตัน — สมาชิก ${players.length}, รวมชั่วโมง ${players.reduce((s,p)=>s+p.hours,0)}, รวมค่าใช้จ่าย ${players.reduce((s,p)=>s+expenseFor(p),0)} ฿`;
-        if(navigator.share){
-          try{
-            await navigator.share({
-              title: 'ก๊วนแบดมินตัน',
-              text: summary,
-              url: location.href
+    // Realtime listener
+    function startRealtime() {
+      try {
+        unsubscribe = onSnapshot(roomDocRef, (docSnap) => {
+          if (!docSnap.exists()) {
+            const init = { pricePerHour: state.pricePerHour || 46, players: state.players || [], updatedAt: serverTimestamp() };
+            setDoc(roomDocRef, init).catch(err => {
+              console.error("Init failed", err);
+              connectionStatus.textContent = "Init failed";
             });
             return;
-          }catch(err){
-            // fallback
           }
+          const data = docSnap.data();
+          applyRemoteData(data);
+        }, (err) => {
+          console.error("Realtime error", err);
+          connectionStatus.textContent = "Realtime error";
+          connectionStatus.classList.add("muted");
+        });
+      } catch (err) {
+        console.error("Start realtime failed", err);
+        connectionStatus.textContent = "Realtime unavailable";
+        connectionStatus.classList.add("muted");
+      }
+    }
+
+    // Initial load
+    async function init() {
+      state = { pricePerHour: Number(pricePerHourInput.value || 46), players: [], updatedAt: null };
+      render();
+      try {
+        const snap = await getDoc(roomDocRef);
+        if (snap.exists()) {
+          applyRemoteData(snap.data());
+        } else {
+          await setDoc(roomDocRef, { pricePerHour: state.pricePerHour, players: state.players, updatedAt: serverTimestamp() });
         }
-        try{
-          const headers = ['ชื่อ','ชั่วโมง','ค่าใช้จ่าย(฿)'];
-          const rows = players.map(p => [p.name, p.hours, expenseFor(p)]);
-          const csvLines = [];
-          csvLines.push(`ราคา/ชม.: ${pricePerHour} ฿, สร้างเมื่อ: ${new Date().toLocaleString('th-TH')}`);
-          csvLines.push(headers.join(','));
-          rows.forEach(r => csvLines.push(r.join(',')));
-          const csv = csvLines.join('\n');
-          await navigator.clipboard.writeText(csv);
-          alert('ข้อมูลถูกคัดลอกเป็น CSV ไปยังคลิปบอร์ดแล้ว คุณสามารถวาง (paste) เพื่อแชร์ได้');
-        }catch(e){
-          try{
-            await navigator.clipboard.writeText(location.href);
-            alert('ไม่สามารถแชร์โดยตรง ได้คัดลอกลิงก์หน้าเว็บไปยังคลิปบอร์ดแล้ว');
-          }catch(err){
-            alert('ไม่สามารถแชร์อัตโนมัติได้ โปรดคัดลอกข้อมูลด้วยตนเอง');
-          }
+      } catch (err) {
+        console.warn("Initial fetch failed", err);
+        connectionStatus.textContent = "Offline or permission denied";
+        connectionStatus.classList.add("muted");
+      }
+      startRealtime();
+    }
+
+    // Event delegation for table actions
+    playersTbody.addEventListener("click", (ev) => {
+      const btn = ev.target.closest("button");
+      if (!btn) return;
+      const id = btn.dataset.id;
+      if (!id) return;
+      if (btn.classList.contains("inc")) modifyPlayerHours(id, 1);
+      else if (btn.classList.contains("dec")) modifyPlayerHours(id, -1);
+      else if (btn.classList.contains("delete")) deletePlayer(id);
+    });
+
+    // Inline edits
+    playersTbody.addEventListener("input", (ev) => {
+      const nameInput = ev.target.closest("input.player-name");
+      if (nameInput) {
+        const id = nameInput.dataset.id;
+        const p = state.players.find(x => String(x.id) === String(id));
+        if (p && p.name !== nameInput.value) {
+          p.name = nameInput.value;
+          scheduleSave();
+        }
+        return;
+      }
+      const hoursInput = ev.target.closest("input.player-hours");
+      if (hoursInput) {
+        const id = hoursInput.dataset.id;
+        const p = state.players.find(x => String(x.id) === String(id));
+        const newHours = Number(hoursInput.value || 0);
+        if (p && p.hours !== newHours) {
+          p.hours = newHours;
+          scheduleSave();
         }
       }
+    });
 
-      shareBtn.addEventListener('click', () => {
-        shareData();
-      });
+    // Add player
+    addPlayerBtn.addEventListener("click", () => {
+      const name = (newPlayerName.value || "").trim();
+      const hours = Number(newPlayerHours.value || 0);
+      if (!name) { newPlayerName.focus(); return; }
+      const id = Date.now() + Math.floor(Math.random() * 1000);
+      state.players.push({ id, name, hours });
+      newPlayerName.value = "";
+      newPlayerHours.value = "0";
+      render();
+      scheduleSave();
+    });
 
-      load();
+    // Add then edit (focus newly added)
+    addEditPlayerBtn.addEventListener("click", () => {
+      const name = (newPlayerName.value || "").trim();
+      const hours = Number(newPlayerHours.value || 0);
+      if (!name) { newPlayerName.focus(); return; }
+      const id = Date.now() + Math.floor(Math.random() * 1000);
+      state.players.push({ id, name, hours });
+      newPlayerName.value = "";
+      newPlayerHours.value = "0";
+      render();
+      scheduleSave();
+      // focus the new row's name input
+      setTimeout(() => {
+        const input = playersTbody.querySelector(`input.player-name[data-id="${id}"]`);
+        if (input) { input.focus(); input.select(); }
+      }, 50);
+    });
 
-      // Expose for debugging
-      window.__badminton = {
-        get players(){ return players },
-        setPrice(v){ pricePerHour = v; priceInput.value = v; render(); },
-        addMember
-      };
-    })();
+    // Price change
+    pricePerHourInput.addEventListener("change", () => {
+      const v = Number(pricePerHourInput.value || 0);
+      if (state.pricePerHour !== v) {
+        state.pricePerHour = v;
+        scheduleSave();
+      }
+    });
+
+    // Modify hours helper
+    function modifyPlayerHours(id, delta) {
+      const p = state.players.find(x => String(x.id) === String(id));
+      if (!p) return;
+      p.hours = Math.max(0, Number(p.hours || 0) + delta);
+      render();
+      scheduleSave();
+    }
+
+    // Delete player
+    function deletePlayer(id) {
+      const idx = state.players.findIndex(x => String(x.id) === String(id));
+      if (idx === -1) return;
+      state.players.splice(idx, 1);
+      render();
+      scheduleSave();
+    }
+
+    // Reset
+    resetBtn.addEventListener("click", () => {
+      if (!confirm("รีเซ็ตเป็นค่าเริ่มต้น?")) return;
+      state.pricePerHour = 46;
+      state.players = [];
+      render();
+      scheduleSave();
+    });
+
+    // Clear
+    clearBtn.addEventListener("click", () => {
+      if (!confirm("ล้างข้อมูลทั้งหมด?")) return;
+      state.players = [];
+      render();
+      scheduleSave();
+    });
+
+    // Export CSV
+    exportBtn.addEventListener("click", () => {
+      const rows = [["id","name","hours"]];
+      (state.players || []).forEach(p => rows.push([p.id, p.name, p.hours]));
+      const csv = rows.map(r => r.map(cell => `"${String(cell).replaceAll('"','""')}"`).join(",")).join("\n");
+      const blob = new Blob([csv], { type: "text/csv;charset=utf-8;" });
+      const url = URL.createObjectURL(blob);
+      const a = document.createElement("a");
+      a.href = url;
+      a.download = `room-${room}-players.csv`;
+      document.body.appendChild(a);
+      a.click();
+      a.remove();
+      URL.revokeObjectURL(url);
+    });
+
+    // Share URL
+    shareBtn.addEventListener("click", async () => {
+      const url = new URL(location.href);
+      url.searchParams.set("room", room);
+      try {
+        await navigator.clipboard.writeText(url.toString());
+        alert("ลิงก์ห้องถูกคัดลอกแล้ว");
+      } catch (err) {
+        prompt("คัดลอกลิงก์นี้:", url.toString());
+      }
+    });
+
+    // Online/offline
+    window.addEventListener("online", () => {
+      connectionStatus.textContent = "Online";
+      connectionStatus.classList.remove("muted");
+    });
+    window.addEventListener("offline", () => {
+      connectionStatus.textContent = "Offline";
+      connectionStatus.classList.add("muted");
+    });
+
+    // Cleanup
+    window.addEventListener("beforeunload", () => {
+      if (unsubscribe) unsubscribe();
+    });
+
+    // Start app
+    init();
   </script>
 </body>
 </html>
