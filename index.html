@@ -306,11 +306,11 @@
         render();
       }
 
-      function addMember(name, hours=1){
-        const id = Date.now() + Math.floor(Math.random()*1000);
-        players.push({ id, name: String(name||'ไม่ระบุ'), hours: Number(hours)||0 });
-        render();
-      }
+      function addMember(name,hours=0){
+         const id = Date.now() + Math.floor(Math.random()*1000);
+         players.push({ id, name: String(name||'ไม่ระบุ'), hours });
+         render();
+       }
 
       function updateSummary(){
         const count = players.length;
