@@ -99,7 +99,7 @@
           <button id="clearStorageBtn" class="btn ghost" title="ล้างข้อมูลที่เก็บไว้">ล้างข้อมูล</button>
           <button id="shareBtn" class="btn ghost" title="แชร์ข้อมูล">แชร์</button>
           <button id="exportBtn" class="btn ghost" title="Export CSV">Export CSV</button>
-          <button id="addRowBtn" class="btn secondary" title="เพิ่มสมาชิกใหม่">+ เพิ่มสมาชิก</button>
+          
         </div>
       </header>
 
@@ -203,10 +203,10 @@
           const raw = localStorage.getItem(STORAGE_KEY);
           if(raw){
             const parsed = JSON.parse(raw);
-            players = parsed.players || SAMPLE.slice();
+            players = parsed.players || [];
             pricePerHour = parsed.pricePerHour ?? pricePerHour;
           } else {
-            players = SAMPLE.slice();
+           players = [];
           }
         }catch(e){
           console.error('load error', e);
@@ -332,10 +332,12 @@
         render();
       });
 
-      addRowBtn.addEventListener('click', () => {
-        newName.focus();
-        addMember('สมาชิกใหม่', 1);
-      });
+      if (addRowBtn) {
+        addRowBtn.addEventListener('click', () => {
+          newName.focus();
+          addMember('ไม่ระบุ', 0);
+        });
+      } 
 
       createBtn.addEventListener('click', () => {
         const name = newName.value.trim() || 'ไม่ระบุ';
@@ -354,13 +356,17 @@
       });
 
       resetBtn.addEventListener('click', () => {
-        if(!confirm('รีเซ็ตเป็นข้อมูลตัวอย่าง? ข้อมูลปัจจุบันจะถูกแทนที่')) return;
-        players = SAMPLE.slice();
-        pricePerHour = 48;
-        priceInput.value = pricePerHour;
-        render();
-      });
 
+             if(!confirm('รีเซ็ตข้อมูลทั้งหมด ?')) return;
+
+               players = [];
+
+              save();
+
+               render();
+
+      });
+ 
       clearStorageBtn.addEventListener('click', () => {
         if(!confirm('ล้างข้อมูลที่เก็บไว้ในเบราว์เซอร์?')) return;
         localStorage.removeItem(STORAGE_KEY);
@@ -383,7 +389,7 @@
           csvLines.push(line);
         });
         const csv = csvLines.join('\n');
-        const blob = new Blob([csv], { type: 'text/csv;charset=utf-8;' });
+        const blob = new Blob(['\uFEFF'+csv],{type:'text/csv;charset=utf-8;'});
         const url = URL.createObjectURL(blob);
         const a = document.createElement('a');
         a.href = url;
