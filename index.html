@@ -3,75 +3,143 @@
 <head>
   <meta charset="utf-8" />
   <meta name="viewport" content="width=device-width,initial-scale=1" />
-  <title>ก๊วนคนรักแบดมินตัน</title>
+  <title>ก๊วนคนรักแบดมินตัน — Premium</title>
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;600;700;800&display=swap" rel="stylesheet">
   <style>
-    /* Preserve UI layout and appearance (do not change layout/colors/positions) */
-    :root{--bg:#fff6f8;--card:#fff;--muted:#666;--accent:#ff6b81}
-    html,body{height:100%;margin:0;font-family:Inter,ui-sans-serif,system-ui,-apple-system,"Segoe UI",Roboto,"Helvetica Neue",Arial}
-    body{background:var(--bg);padding:20px;color:#111}
-    .app{max-width:1100px;margin:0 auto}
-    header{display:flex;align-items:center;justify-content:space-between;margin-bottom:12px}
-    h1{font-size:20px;margin:0;display:flex;gap:12px;align-items:center}
-    .logo{width:36px;height:36px;border-radius:6px;background:linear-gradient(135deg,#ffd6e0,#fff);display:flex;align-items:center;justify-content:center;font-weight:700;color:var(--accent)}
-    .controls{display:flex;gap:8px;align-items:center}
-    .card{background:var(--card);padding:12px;border-radius:10px;box-shadow:0 1px 2px rgba(0,0,0,.04)}
-    .layout{display:flex;gap:16px}
+    /* Premium SaaS visual refresh
+       - Modern gradients
+       - Subtle glass effect
+       - Neutral palette, high readability
+       - Preserve DOM structure and IDs for JS compatibility
+    */
+
+    :root{
+      --bg-1: #f6f8fb;
+      --bg-2: #eef3f9;
+      --card-bg: rgba(255,255,255,0.72);
+      --glass-border: rgba(255,255,255,0.6);
+      --muted: #6b7280;
+      --text: #0f1724;
+      --accent: linear-gradient(90deg,#6b8cff 0%,#7bd389 100%);
+      --accent-solid: #5b8bff;
+      --danger: #ff5b6e;
+      --glass-shadow: 0 8px 30px rgba(15,23,36,0.08);
+      --radius: 12px;
+    }
+
+    html,body{height:100%;margin:0;font-family:Inter,ui-sans-serif,system-ui,-apple-system,"Segoe UI",Roboto,"Helvetica Neue",Arial;color:var(--text);background:linear-gradient(180deg,var(--bg-1),var(--bg-2));-webkit-font-smoothing:antialiased;-moz-osx-font-smoothing:grayscale}
+    .app{max-width:1100px;margin:28px auto;padding:18px}
+    header{display:flex;align-items:center;justify-content:space-between;gap:16px;margin-bottom:18px}
+    .brand{display:flex;align-items:center;gap:14px}
+    .logo{
+      width:56px;height:56px;border-radius:12px;
+      background:linear-gradient(135deg,#fff,#fff0);
+      display:flex;align-items:center;justify-content:center;
+      box-shadow:0 6px 18px rgba(91,139,255,0.12), inset 0 -6px 18px rgba(123,211,137,0.03);
+      border:1px solid rgba(255,255,255,0.6);
+      font-weight:800;color:var(--accent-solid);font-size:18px;
+    }
+    h1{font-size:18px;margin:0;font-weight:700;letter-spacing:0.2px}
+    .subtitle{font-size:12px;color:var(--muted);margin-top:2px}
+    .controls{display:flex;gap:12px;align-items:center}
+    .room-pill{background:linear-gradient(90deg,#ffffffcc, #ffffffaa);padding:8px 12px;border-radius:999px;border:1px solid var(--glass-border);box-shadow:var(--glass-shadow);font-weight:600}
+    .status{font-size:13px;color:var(--muted);padding-left:6px}
+
+    .card{
+      background:var(--card-bg);
+      border-radius:var(--radius);
+      padding:18px;
+      box-shadow:var(--glass-shadow);
+      border:1px solid rgba(255,255,255,0.6);
+      backdrop-filter: blur(8px) saturate(120%);
+    }
+
+    .top-row{display:flex;justify-content:space-between;align-items:center;gap:12px;margin-bottom:14px}
+    .settings{display:flex;gap:12px;align-items:center}
+    label.small{font-size:12px;color:var(--muted);display:block;margin-bottom:6px}
+    input[type="number"], input[type="text"]{
+      padding:10px 12px;border-radius:10px;border:1px solid rgba(15,23,36,0.06);background:rgba(255,255,255,0.9);font-weight:600;color:var(--text);
+      box-shadow:0 2px 8px rgba(15,23,36,0.03);
+    }
+
+    .controls-right{display:flex;gap:8px;align-items:center}
+    button{
+      border:0;padding:10px 12px;border-radius:10px;font-weight:600;cursor:pointer;
+      box-shadow:0 6px 18px rgba(15,23,36,0.06);
+    }
+    .btn-primary{
+      background:var(--accent);color:#fff;
+      background-image:var(--accent);
+      background-size:200% 100%;
+      transition:transform .12s ease, box-shadow .12s ease;
+    }
+    .btn-ghost{
+      background:transparent;color:var(--accent-solid);border:1px solid rgba(91,139,255,0.12);
+    }
+    .btn-danger{background:var(--danger);color:#fff}
+
+    .layout{display:flex;gap:18px;margin-top:8px}
     .left{flex:1}
-    .right{width:320px}
-    .row{display:flex;gap:8px;align-items:center}
-    input[type="text"],input[type="number"],select,textarea{padding:8px;border:1px solid #eee;border-radius:6px}
-    button{background:var(--accent);color:#fff;border:0;padding:8px 10px;border-radius:6px;cursor:pointer}
-    button.ghost{background:transparent;color:var(--accent);border:1px solid rgba(255,107,129,0.15)}
-    table{width:100%;border-collapse:collapse;margin-top:12px;background:#fff;border-radius:6px;overflow:hidden}
-    th,td{padding:10px;border-bottom:1px solid #f3e9ec;text-align:left}
-    th{font-weight:700;color:var(--muted);font-size:14px;background:linear-gradient(180deg,#fff,#fff)}
-    .actions{display:flex;gap:6px}
-    .small{padding:6px 8px;font-size:13px;border-radius:6px}
-    .muted{color:var(--muted);font-size:13px}
-    .status{font-size:13px;color:#444;margin-left:8px}
+    .right{width:320px;flex-shrink:0}
+
+    table{width:100%;border-collapse:collapse;background:transparent;border-radius:10px;overflow:hidden}
+    thead th{background:linear-gradient(180deg,rgba(255,255,255,0.6),rgba(255,255,255,0.5));text-align:left;padding:12px 14px;font-weight:700;color:var(--muted);font-size:13px;border-bottom:1px solid rgba(15,23,36,0.04)}
+    tbody td{padding:12px 14px;border-bottom:1px solid rgba(15,23,36,0.04);vertical-align:middle;background:transparent}
+    tbody tr:last-child td{border-bottom:0}
+    input.player-name,input.player-hours{padding:8px 10px;border-radius:8px;border:1px solid rgba(15,23,36,0.06);background:rgba(255,255,255,0.9);font-weight:600}
+    .actions{display:flex;gap:8px;align-items:center}
+    .small{padding:8px 10px;border-radius:8px;font-size:13px}
+    .muted{color:var(--muted)}
+    .panel{background:linear-gradient(180deg,rgba(255,255,255,0.85),rgba(255,255,255,0.78));padding:14px;border-radius:10px;border:1px solid rgba(255,255,255,0.6);box-shadow:0 6px 18px rgba(15,23,36,0.04)}
+    .panel h3{margin:0 0 8px 0;font-size:15px}
     .summary{margin-top:12px;display:flex;flex-direction:column;gap:8px}
-    .panel{background:linear-gradient(180deg,#fff,#fff);padding:12px;border-radius:8px;border:1px solid #fff}
-    .danger{background:#fb0c0c}
-    label{font-size:13px;color:var(--muted);display:block;margin-bottom:6px}
-    .right .panel h3{margin:0 0 8px 0;font-size:16px}
     .note{font-size:12px;color:var(--muted)}
-    @media (max-width:900px){.layout{flex-direction:column}.right{width:100%}}
+
+    /* subtle hover states */
+    button.btn-primary:hover{transform:translateY(-2px);box-shadow:0 12px 30px rgba(91,139,255,0.12)}
+    .row-action:hover{transform:translateY(-2px)}
+    .danger{background:var(--danger);color:#fff}
+
+    @media (max-width:920px){
+      .layout{flex-direction:column}
+      .right{width:100%}
+      .brand h1{font-size:16px}
+    }
   </style>
 </head>
 <body>
   <div class="app">
     <header>
-      <h1>
-        <span class="logo">🏸</span>
+      <div class="brand">
+        <div class="logo">🏸</div>
         <div>
-          ก๊วนคนรักแบดมินตัน
-          <div style="font-size:12px;color:var(--muted)">Developed by Ball Rittha 0957602580</div>
+          <h1>ก๊วนคนรักแบดมินตัน</h1>
+          <div class="subtitle">จัดการสมาชิกและชั่วโมงแบบเรียลไทม์ — Premium</div>
         </div>
-      </h1>
+      </div>
+
       <div class="controls">
-        <div class="muted">Room: <strong id="roomIdDisplay">main</strong></div>
-        <div id="connectionStatus" class="status muted">Connecting…</div>
+        <div class="room-pill" id="roomIdDisplay">main</div>
+        <div id="connectionStatus" class="status">Connecting…</div>
       </div>
     </header>
 
-    <div class="card">
-      <div class="row" style="justify-content:space-between;margin-bottom:12px">
-        <div style="display:flex;gap:12px;align-items:center">
+    <div class="card" id="mainCard">
+      <div class="top-row">
+        <div class="settings" style="align-items:flex-start">
           <div>
-            <label class="muted">ตั้งค่า</label>
-            <div style="display:flex;gap:8px;align-items:center">
-              <div class="muted">ราคา ต่อชั่วโมง</div>
-              <input id="pricePerHour" type="number" min="0" value="46" style="width:100px"/>
-            </div>
-            <div class="note">ค่าใช้จ่ายจะคำนวณอัตโนมัติ</div>
+            <label class="small">ราคา ต่อชั่วโมง</label>
+            <input id="pricePerHour" type="number" min="0" value="46" style="width:140px"/>
+            <div class="note" style="margin-top:6px">ราคาจะถูกนำไปคำนวณในสรุปอัตโนมัติ</div>
           </div>
         </div>
 
-        <div style="display:flex;gap:8px;align-items:center">
-          <button id="resetBtn" class="ghost small">รีเซ็ต</button>
-          <button id="clearBtn" class="ghost small">ล้างข้อมูล</button>
-          <button id="shareBtn" class="ghost small">แชร์</button>
-          <button id="exportBtn" class="ghost small">Export CSV</button>
+        <div class="controls-right">
+          <button id="resetBtn" class="btn-ghost small">รีเซ็ต</button>
+          <button id="clearBtn" class="btn-ghost small">ล้างข้อมูล</button>
+          <button id="shareBtn" class="btn-ghost small">แชร์</button>
+          <button id="exportBtn" class="btn-ghost small">Export CSV</button>
         </div>
       </div>
 
@@ -80,12 +148,12 @@
           <table id="playersTable" aria-live="polite">
             <thead>
               <tr>
-                <th style="width:40px">#</th>
+                <th style="width:48px">#</th>
                 <th>ชื่อ</th>
-                <th style="width:100px">ชม.</th>
-                <th style="width:120px">ค่าใช้จ่าย</th>
-                <th style="width:160px">เพิ่ม</th>
-                <th style="width:160px">ลด</th>
+                <th style="width:110px">ชม.</th>
+                <th style="width:140px">ค่าใช้จ่าย</th>
+                <th style="width:120px">เพิ่ม</th>
+                <th style="width:120px">ลด</th>
                 <th style="width:80px">ลบ</th>
               </tr>
             </thead>
@@ -96,22 +164,22 @@
         <div class="right">
           <div class="panel">
             <h3>เพิ่มสมาชิกใหม่</h3>
-            <label>ชื่อสมาชิก</label>
+            <label class="small">ชื่อสมาชิก</label>
             <input id="newPlayerName" type="text" placeholder="ชื่อสมาชิก" />
-            <label style="margin-top:8px">จำนวนชั่วโมง</label>
+            <label class="small" style="margin-top:10px">จำนวนชั่วโมง</label>
             <input id="newPlayerHours" type="number" min="0" value="0" />
-            <div style="display:flex;gap:8px;margin-top:10px">
-              <button id="addPlayerBtn" class="small">เพิ่ม</button>
-              <button id="addEditPlayerBtn" class="small ghost">เพิ่มแล้วแก้ไข</button>
+            <div style="display:flex;gap:10px;margin-top:12px">
+              <button id="addPlayerBtn" class="btn-primary small">เพิ่ม</button>
+              <button id="addEditPlayerBtn" class="btn-ghost small">เพิ่มแล้วแก้ไข</button>
             </div>
           </div>
 
-          <div class="panel" style="margin-top:12px">
+          <div class="panel" style="margin-top:14px">
             <h3>สรุป</h3>
             <div class="muted">สมาชิกทั้งหมด <strong id="count">0</strong></div>
             <div class="muted">รวมชั่วโมง <strong id="totalHours">0</strong></div>
             <div class="muted">รวมค่าใช้จ่าย <strong id="totalCost">0 ฿</strong></div>
-            <div class="note" style="margin-top:8px">สามารถใช้ได้ทุกแพลตฟอร์ม</div>
+            <div class="note" style="margin-top:10px">ออกแบบพัฒนาโดย ซุปเปอร์บอล 0957602580</div>
           </div>
         </div>
       </div>
@@ -141,11 +209,11 @@
       getDoc
     } from "https://www.gstatic.com/firebasejs/9.22.2/firebase-firestore.js";
 
-    // Init Firebase
+    // Initialize Firebase
     const app = initializeApp(firebaseConfig);
     const db = getFirestore(app);
 
-    // Helpers
+    // Short helpers
     const $ = (s, el = document) => el.querySelector(s);
     const escapeHtml = (s = "") => String(s)
       .replaceAll("&", "&amp;").replaceAll("<", "&lt;").replaceAll(">", "&gt;")
@@ -191,13 +259,13 @@
       });
     }
 
-    // Render UI (Thai labels preserved)
+    // Render UI
     function render() {
       playersTbody.innerHTML = "";
       const players = sortPlayers(state.players || []);
       if (players.length === 0) {
         const tr = document.createElement("tr");
-        tr.innerHTML = `<td colspan="7" class="muted">ไม่ระบุ</td>`;
+        tr.innerHTML = `<td colspan="7" class="muted" style="padding:18px;text-align:center">ไม่ระบุ</td>`;
         playersTbody.appendChild(tr);
       } else {
         players.forEach((p, idx) => {
@@ -205,13 +273,13 @@
           const tr = document.createElement("tr");
           tr.dataset.id = p.id;
           tr.innerHTML = `
-            <td>${idx + 1}</td>
+            <td style="font-weight:700">${idx + 1}</td>
             <td><input class="player-name" data-id="${p.id}" value="${escapeHtml(p.name)}" style="width:100%"/></td>
             <td><input class="player-hours" data-id="${p.id}" type="number" min="0" value="${p.hours}" style="width:80px"/></td>
-            <td>${cost} ฿</td>
-            <td><div class="actions"><button class="small inc" data-id="${p.id}">[+]</button></div></td>
-            <td><div class="actions"><button class="small dec" data-id="${p.id}">[-]</button></div></td>
-            <td><button class="small delete danger" data-id="${p.id}">🗑️</button></td>
+            <td style="font-weight:700">${cost} ฿</td>
+            <td><div class="actions"><button class="small btn-primary row-action inc" data-id="${p.id}">+1</button></div></td>
+            <td><div class="actions"><button class="small btn-ghost row-action dec" data-id="${p.id}">-1</button></div></td>
+            <td><button class="small btn-danger row-action delete" data-id="${p.id}">ลบ</button></td>
           `;
           playersTbody.appendChild(tr);
         });
@@ -386,7 +454,6 @@
       newPlayerHours.value = "0";
       render();
       scheduleSave();
-      // focus the new row's name input
       setTimeout(() => {
         const input = playersTbody.querySelector(`input.player-name[data-id="${id}"]`);
         if (input) { input.focus(); input.select(); }
