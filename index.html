@@ -140,7 +140,7 @@
             <input id="newName" type="text" placeholder="ชื่อสมาชิก" aria-label="ชื่อสมาชิก">
           </div>
           <div class="row">
-            <!--input id="newHours" type="number" min="0" step="1" value="1" aria-label="ชั่วโมงเริ่มต้น"-->
+            <input id="newHours" type="number" min="0" step="1" value="0" aria-label="ชั่วโมงเริ่มต้น">
           </div>
           <div style="display:flex;gap:8px">
             <button id="createBtn" class="btn">เพิ่ม</button>
@@ -342,7 +342,7 @@
         const hours = Math.max(0, Math.floor(Number(newHours.value) || 0));
         addMember(name, hours);
         newName.value = '';
-        newHours.value = 1;
+        newHours.value = 0;
       });
 
       createAndEditBtn.addEventListener('click', () => {
