@@ -201,7 +201,7 @@
             <label class="small">ชื่อสมาชิก</label>
             <input id="newPlayerName" type="text" placeholder="ชื่อสมาชิก" />
             <label class="small" style="margin-top:10px">ระดับฝีมือ</label>
-            <input id="newPlayerLevel" type="text" placeholder="เช่น BG " />
+            <input id="newPlayerLevel" type="text" placeholder="เช่น Beginner / Intermediate / Advanced" />
             <label class="small" style="margin-top:10px">จำนวนชั่วโมง</label>
             <input id="newPlayerHours" type="number" min="0" value="0" />
             <div style="display:flex;gap:10px;margin-top:12px">
@@ -474,7 +474,11 @@
       if (!id) return;
       if (btn.classList.contains("inc")) modifyPlayerHours(id, 1);
       else if (btn.classList.contains("dec")) modifyPlayerHours(id, -1);
-      else if (btn.classList.contains("delete")) deletePlayer(id);
+      else if (btn.classList.contains("delete")) {
+        // Confirm before deleting a player (added per request)
+        if (!confirm("ยืนยันการลบสมาชิกนี้?")) return;
+        deletePlayer(id);
+      }
     });
 
     // Inline edits (with auto-resize for name)
