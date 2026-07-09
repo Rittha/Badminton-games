@@ -88,7 +88,7 @@
     thead th{background:linear-gradient(180deg,rgba(255,255,255,0.6),rgba(255,255,255,0.5));text-align:left;padding:12px 14px;font-weight:700;color:var(--muted);font-size:13px;border-bottom:1px solid rgba(15,23,36,0.04)}
     tbody td{padding:12px 14px;border-bottom:1px solid rgba(15,23,36,0.04);vertical-align:middle;background:transparent}
     tbody tr:last-child td{border-bottom:0}
-    input.player-name,input.player-hours{padding:8px 10px;border-radius:8px;border:1px solid rgba(15,23,36,0.06);background:rgba(255,255,255,0.9);font-weight:600}
+    input.player-name,input.player-hours,input.player-level{padding:8px 10px;border-radius:8px;border:1px solid rgba(15,23,36,0.06);background:rgba(255,255,255,0.9);font-weight:600}
     .actions{display:flex;gap:8px;align-items:center}
     .small{padding:8px 10px;border-radius:8px;font-size:13px}
     .muted{color:var(--muted)}
@@ -122,6 +122,14 @@
       overflow: hidden;
       text-overflow: ellipsis;
       box-sizing: content-box; /* measurement uses content width */
+    }
+
+    /* Level input: fixed reasonable width */
+    input.player-level {
+      width: 120px;
+      min-width: 80px;
+      max-width: 100%;
+      box-sizing: border-box;
     }
 
     input.player-name[title] { cursor: help; }
@@ -175,6 +183,7 @@
               <tr>
                 <th style="width:48px">#</th>
                 <th>ชื่อ</th>
+                <th>ระดับ</th>
                 <th style="width:110px">ชม.</th>
                 <th style="width:140px">ค่าใช้จ่าย</th>
                 <th style="width:120px">เพิ่ม</th>
@@ -191,6 +200,8 @@
             <h3>เพิ่มสมาชิกใหม่</h3>
             <label class="small">ชื่อสมาชิก</label>
             <input id="newPlayerName" type="text" placeholder="ชื่อสมาชิก" />
+            <label class="small" style="margin-top:10px">ระดับฝีมือ</label>
+            <input id="newPlayerLevel" type="text" placeholder="เช่น BG " />
             <label class="small" style="margin-top:10px">จำนวนชั่วโมง</label>
             <input id="newPlayerHours" type="number" min="0" value="0" />
             <div style="display:flex;gap:10px;margin-top:12px">
@@ -252,6 +263,7 @@
     const playersTbody = $("#playersTbody");
     const addPlayerBtn = $("#addPlayerBtn");
     const newPlayerName = $("#newPlayerName");
+    const newPlayerLevel = $("#newPlayerLevel");
     const newPlayerHours = $("#newPlayerHours");
     const pricePerHourInput = $("#pricePerHour");
     const countEl = $("#count");
@@ -314,7 +326,7 @@
       const players = sortPlayers(state.players || []);
       if (players.length === 0) {
         const tr = document.createElement("tr");
-        tr.innerHTML = `<td colspan="7" class="muted" style="padding:18px;text-align:center">ไม่ระบุ</td>`;
+        tr.innerHTML = `<td colspan="8" class="muted" style="padding:18px;text-align:center">ไม่ระบุ</td>`;
         playersTbody.appendChild(tr);
       } else {
         players.forEach((p, idx) => {
@@ -324,6 +336,7 @@
           tr.innerHTML = `
             <td style="font-weight:700">${idx + 1}</td>
             <td><input class="player-name" data-id="${p.id}" value="${escapeHtml(p.name)}"/></td>
+            <td><input class="player-level" data-id="${p.id}" value="${escapeHtml(p.level || '')}" /></td>
             <td><input class="player-hours" data-id="${p.id}" type="number" min="0" value="${p.hours}" style="width:80px"/></td>
             <td style="font-weight:700">${cost} ฿</td>
             <td><div class="actions"><button class="small btn-primary row-action inc" data-id="${p.id}">+1</button></div></td>
@@ -335,7 +348,6 @@
           // After appending, auto-resize the name input
           const nameInput = tr.querySelector('input.player-name');
           if (nameInput) {
-            // ensure value is unescaped for measurement
             nameInput.value = p.name || "";
             autoResizeInput(nameInput);
           }
@@ -370,7 +382,7 @@
       try {
         const payload = {
           pricePerHour: Number(state.pricePerHour || 0),
-          players: (state.players || []).map(p => ({ id: p.id, name: p.name, hours: Number(p.hours || 0) })),
+          players: (state.players || []).map(p => ({ id: p.id, name: p.name, hours: Number(p.hours || 0), level: p.level || "" })),
           updatedAt: serverTimestamp()
         };
         await setDoc(roomDocRef, payload);
@@ -394,7 +406,7 @@
         connectionStatus.textContent = "Synced";
         return;
       }
-      const remotePlayers = Array.isArray(remote.players) ? remote.players.map(p => ({ id: p.id, name: p.name, hours: Number(p.hours || 0) })) : [];
+      const remotePlayers = Array.isArray(remote.players) ? remote.players.map(p => ({ id: p.id, name: p.name, hours: Number(p.hours || 0), level: p.level || "" })) : [];
       const remotePrice = Number(remote.pricePerHour || 0);
       const localJson = JSON.stringify({ pricePerHour: state.pricePerHour, players: sortPlayers(state.players || []) });
       const remoteJson = JSON.stringify({ pricePerHour: remotePrice, players: sortPlayers(remotePlayers) });
@@ -465,7 +477,7 @@
       else if (btn.classList.contains("delete")) deletePlayer(id);
     });
 
-    // Inline edits (with auto-resize)
+    // Inline edits (with auto-resize for name)
     playersTbody.addEventListener("input", (ev) => {
       const nameInput = ev.target.closest("input.player-name");
       if (nameInput) {
@@ -474,6 +486,16 @@
         const p = state.players.find(x => String(x.id) === String(id));
         if (p && p.name !== nameInput.value) {
           p.name = nameInput.value;
+          scheduleSave();
+        }
+        return;
+      }
+      const levelInput = ev.target.closest("input.player-level");
+      if (levelInput) {
+        const id = levelInput.dataset.id;
+        const p = state.players.find(x => String(x.id) === String(id));
+        if (p && p.level !== levelInput.value) {
+          p.level = levelInput.value;
           scheduleSave();
         }
         return;
@@ -493,11 +515,13 @@
     // Add player
     addPlayerBtn.addEventListener("click", async () => {
       const name = (newPlayerName.value || "").trim();
+      const level = (newPlayerLevel.value || "").trim();
       const hours = Number(newPlayerHours.value || 0);
       if (!name) { newPlayerName.focus(); return; }
       const id = Date.now() + Math.floor(Math.random() * 1000);
-      state.players.push({ id, name, hours });
+      state.players.push({ id, name, hours, level });
       newPlayerName.value = "";
+      newPlayerLevel.value = "";
       newPlayerHours.value = "0";
       render();
       await saveToFirestore();
@@ -549,8 +573,8 @@
 
     // Export CSV
     exportBtn.addEventListener("click", () => {
-      const rows = [["id","name","hours"]];
-      (state.players || []).forEach(p => rows.push([p.id, p.name, p.hours]));
+      const rows = [["id","name","level","hours"]];
+      (state.players || []).forEach(p => rows.push([p.id, p.name, p.level || "", p.hours]));
       const csv = rows.map(r => r.map(cell => `"${String(cell).replaceAll('"','""')}"`).join(",")).join("\n");
       const blob = new Blob([csv], { type: "text/csv;charset=utf-8;" });
       const url = URL.createObjectURL(blob);
